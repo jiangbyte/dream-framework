@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.user.profile.param.UserProfilePageParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileAddParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileEditParam;
-import io.jiangbyte.app.modules.user.profile.param.UserProfileIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class UserProfileController {
     @Operation(summary = "获取用户档案详情分页")
     @SaCheckPermission("/user/profile/page")
     @GetMapping("/user/profile/page")
-    public Result<?> page(@ParameterObject UserProfilePageParam userProfilePageParam) {
-        return Result.success(userProfileService.page(userProfilePageParam));
+    public Result<?> page(@ParameterObject UserProfilePageParam req) {
+        return Result.success(userProfileService.page(req));
     }
 
     @Operation(summary = "添加用户档案详情")
     @SaCheckPermission("/user/profile/add")
     @PostMapping("/user/profile/add")
-    public Result<?> add(@RequestBody @Valid UserProfileAddParam userProfileAddParam) {
-        userProfileService.add(userProfileAddParam);
+    public Result<?> add(@RequestBody @Valid UserProfileAddParam req) {
+        userProfileService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑用户档案详情")
     @SaCheckPermission("/user/profile/edit")
     @PostMapping("/user/profile/edit")
-    public Result<?> edit(@RequestBody @Valid UserProfileEditParam userProfileEditParam) {
-        userProfileService.edit(userProfileEditParam);
+    public Result<?> edit(@RequestBody @Valid UserProfileEditParam req) {
+        userProfileService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除用户档案详情")
     @SaCheckPermission("/user/profile/delete")
     @PostMapping("/user/profile/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<UserProfileIdParam> userProfileIdParam) {
-        userProfileService.delete(userProfileIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        userProfileService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取用户档案详情详情")
     @SaCheckPermission("/user/profile/detail")
-    @GetMapping("/user/profile/detail")
-    public Result<?> detail(@ParameterObject @Valid UserProfileIdParam userProfileIdParam) {
-        return Result.success(userProfileService.detail(userProfileIdParam));
+    @GetMapping("/user/profile/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(userProfileService.detail(id));
     }
 
     @Operation(summary = "获取用户档案详情N最新")

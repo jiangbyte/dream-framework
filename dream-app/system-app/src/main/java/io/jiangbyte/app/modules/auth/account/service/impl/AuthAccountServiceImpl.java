@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.auth.account.entity.AuthAccount;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountIdParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountPageParam;
 import io.jiangbyte.app.modules.auth.account.mapper.AuthAccountMapper;
 import io.jiangbyte.app.modules.auth.account.service.AuthAccountService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class AuthAccountServiceImpl extends ServiceImpl<AuthAccountMapper, AuthAccount> implements AuthAccountService {
 
     @Override
-    public Page<AuthAccount> page(AuthAccountPageParam authAccountPageParam) {
+    public Page<AuthAccount> page(AuthAccountPageParam req) {
         QueryWrapper<AuthAccount> queryWrapper = new QueryWrapper<AuthAccount>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(authAccountPageParam.getSortField(), authAccountPageParam.getSortOrder()) && ISortOrderEnum.isValid(authAccountPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    authAccountPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authAccountPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authAccountPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authAccountPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthAccountAddParam authAccountAddParam) {
-        AuthAccount bean = BeanUtil.toBean(authAccountAddParam, AuthAccount.class);
+    public void add(AuthAccountAddParam req) {
+        AuthAccount bean = BeanUtil.toBean(req, AuthAccount.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthAccountEditParam authAccountEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthAccount>().eq(AuthAccount::getId, authAccountEditParam.getId()))) {
+    public void edit(AuthAccountEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthAccount>().eq(AuthAccount::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthAccount bean = BeanUtil.toBean(authAccountEditParam, AuthAccount.class);
-        BeanUtil.copyProperties(authAccountEditParam, bean);
+        AuthAccount bean = BeanUtil.toBean(req, AuthAccount.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthAccountIdParam> authAccountIdParamList) {
-        if (ObjectUtil.isEmpty(authAccountIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authAccountIdParamList, AuthAccountIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthAccount detail(AuthAccountIdParam authAccountIdParam) {
-        AuthAccount authAccount = this.getById(authAccountIdParam.getId());
+    public AuthAccount detail(String id) {
+        AuthAccount authAccount = this.getById(id);
         if (ObjectUtil.isEmpty(authAccount)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

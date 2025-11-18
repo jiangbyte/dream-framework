@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.auth.role.param.AuthRolePageParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleAddParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleEditParam;
-import io.jiangbyte.app.modules.auth.role.param.AuthRoleIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class AuthRoleController {
     @Operation(summary = "获取角色分页")
     @SaCheckPermission("/auth/role/page")
     @GetMapping("/auth/role/page")
-    public Result<?> page(@ParameterObject AuthRolePageParam authRolePageParam) {
-        return Result.success(authRoleService.page(authRolePageParam));
+    public Result<?> page(@ParameterObject AuthRolePageParam req) {
+        return Result.success(authRoleService.page(req));
     }
 
     @Operation(summary = "添加角色")
     @SaCheckPermission("/auth/role/add")
     @PostMapping("/auth/role/add")
-    public Result<?> add(@RequestBody @Valid AuthRoleAddParam authRoleAddParam) {
-        authRoleService.add(authRoleAddParam);
+    public Result<?> add(@RequestBody @Valid AuthRoleAddParam req) {
+        authRoleService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑角色")
     @SaCheckPermission("/auth/role/edit")
     @PostMapping("/auth/role/edit")
-    public Result<?> edit(@RequestBody @Valid AuthRoleEditParam authRoleEditParam) {
-        authRoleService.edit(authRoleEditParam);
+    public Result<?> edit(@RequestBody @Valid AuthRoleEditParam req) {
+        authRoleService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除角色")
     @SaCheckPermission("/auth/role/delete")
     @PostMapping("/auth/role/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<AuthRoleIdParam> authRoleIdParam) {
-        authRoleService.delete(authRoleIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        authRoleService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取角色详情")
     @SaCheckPermission("/auth/role/detail")
-    @GetMapping("/auth/role/detail")
-    public Result<?> detail(@ParameterObject @Valid AuthRoleIdParam authRoleIdParam) {
-        return Result.success(authRoleService.detail(authRoleIdParam));
+    @GetMapping("/auth/role/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(authRoleService.detail(id));
     }
 
     @Operation(summary = "获取角色N最新")

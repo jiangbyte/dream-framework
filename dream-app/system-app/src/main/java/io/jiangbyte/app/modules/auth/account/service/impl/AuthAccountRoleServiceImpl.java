@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.auth.account.entity.AuthAccountRole;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleIdParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRolePageParam;
 import io.jiangbyte.app.modules.auth.account.mapper.AuthAccountRoleMapper;
 import io.jiangbyte.app.modules.auth.account.service.AuthAccountRoleService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class AuthAccountRoleServiceImpl extends ServiceImpl<AuthAccountRoleMapper, AuthAccountRole> implements AuthAccountRoleService {
 
     @Override
-    public Page<AuthAccountRole> page(AuthAccountRolePageParam authAccountRolePageParam) {
+    public Page<AuthAccountRole> page(AuthAccountRolePageParam req) {
         QueryWrapper<AuthAccountRole> queryWrapper = new QueryWrapper<AuthAccountRole>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(authAccountRolePageParam.getSortField(), authAccountRolePageParam.getSortOrder()) && ISortOrderEnum.isValid(authAccountRolePageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    authAccountRolePageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authAccountRolePageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authAccountRolePageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authAccountRolePageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthAccountRoleAddParam authAccountRoleAddParam) {
-        AuthAccountRole bean = BeanUtil.toBean(authAccountRoleAddParam, AuthAccountRole.class);
+    public void add(AuthAccountRoleAddParam req) {
+        AuthAccountRole bean = BeanUtil.toBean(req, AuthAccountRole.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthAccountRoleEditParam authAccountRoleEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthAccountRole>().eq(AuthAccountRole::getId, authAccountRoleEditParam.getId()))) {
+    public void edit(AuthAccountRoleEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthAccountRole>().eq(AuthAccountRole::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthAccountRole bean = BeanUtil.toBean(authAccountRoleEditParam, AuthAccountRole.class);
-        BeanUtil.copyProperties(authAccountRoleEditParam, bean);
+        AuthAccountRole bean = BeanUtil.toBean(req, AuthAccountRole.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthAccountRoleIdParam> authAccountRoleIdParamList) {
-        if (ObjectUtil.isEmpty(authAccountRoleIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authAccountRoleIdParamList, AuthAccountRoleIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthAccountRole detail(AuthAccountRoleIdParam authAccountRoleIdParam) {
-        AuthAccountRole authAccountRole = this.getById(authAccountRoleIdParam.getId());
+    public AuthAccountRole detail(String id) {
+        AuthAccountRole authAccountRole = this.getById(id);
         if (ObjectUtil.isEmpty(authAccountRole)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

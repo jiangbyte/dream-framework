@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.auth.group.entity.AuthGroup;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupAddParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupEditParam;
-import io.jiangbyte.app.modules.auth.group.param.AuthGroupIdParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupPageParam;
 import io.jiangbyte.app.modules.auth.group.mapper.AuthGroupMapper;
 import io.jiangbyte.app.modules.auth.group.service.AuthGroupService;
@@ -39,58 +38,56 @@ import java.util.*;
 public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup> implements AuthGroupService {
 
     @Override
-    public Page<AuthGroup> page(AuthGroupPageParam authGroupPageParam) {
+    public Page<AuthGroup> page(AuthGroupPageParam req) {
         QueryWrapper<AuthGroup> queryWrapper = new QueryWrapper<AuthGroup>().checkSqlInjection();
-        // 关键字
-        if (ObjectUtil.isNotEmpty(authGroupPageParam.getKeyword())) {
-            queryWrapper.lambda().like(AuthGroup::getName, authGroupPageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(AuthGroup::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(authGroupPageParam.getSortField(), authGroupPageParam.getSortOrder()) && ISortOrderEnum.isValid(authGroupPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    authGroupPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authGroupPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         } else {
             queryWrapper.lambda().orderByAsc(AuthGroup::getSort);
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authGroupPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authGroupPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthGroupAddParam authGroupAddParam) {
-        AuthGroup bean = BeanUtil.toBean(authGroupAddParam, AuthGroup.class);
+    public void add(AuthGroupAddParam req) {
+        AuthGroup bean = BeanUtil.toBean(req, AuthGroup.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthGroupEditParam authGroupEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthGroup>().eq(AuthGroup::getId, authGroupEditParam.getId()))) {
+    public void edit(AuthGroupEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthGroup>().eq(AuthGroup::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthGroup bean = BeanUtil.toBean(authGroupEditParam, AuthGroup.class);
-        BeanUtil.copyProperties(authGroupEditParam, bean);
+        AuthGroup bean = BeanUtil.toBean(req, AuthGroup.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthGroupIdParam> authGroupIdParamList) {
-        if (ObjectUtil.isEmpty(authGroupIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authGroupIdParamList, AuthGroupIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthGroup detail(AuthGroupIdParam authGroupIdParam) {
-        AuthGroup authGroup = this.getById(authGroupIdParam.getId());
+    public AuthGroup detail(String id) {
+        AuthGroup authGroup = this.getById(id);
         if (ObjectUtil.isEmpty(authGroup)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

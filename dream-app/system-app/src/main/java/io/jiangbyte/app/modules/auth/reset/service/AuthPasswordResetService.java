@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.auth.reset.entity.AuthPasswordReset;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetAddParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetEditParam;
-import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetIdParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 密码重置表 服务类
 */
 public interface AuthPasswordResetService extends IService<AuthPasswordReset> {
-    Page<AuthPasswordReset> page(AuthPasswordResetPageParam authPasswordResetPageParam);
+    Page<AuthPasswordReset> page(AuthPasswordResetPageParam req);
 
-    void add(AuthPasswordResetAddParam authPasswordResetAddParam);
+    void add(AuthPasswordResetAddParam req);
 
-    void edit(AuthPasswordResetEditParam authPasswordResetEditParam);
+    void edit(AuthPasswordResetEditParam req);
 
-    void delete(List<AuthPasswordResetIdParam> authPasswordResetIdParamList);
+    void delete(List<String> ids);
 
-    AuthPasswordReset detail(AuthPasswordResetIdParam authPasswordResetIdParam);
+    AuthPasswordReset detail(String id);
 
     List<AuthPasswordReset> latest(int n);
 

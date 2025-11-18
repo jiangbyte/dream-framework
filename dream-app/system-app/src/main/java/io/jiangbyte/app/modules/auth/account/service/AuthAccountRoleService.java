@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.auth.account.entity.AuthAccountRole;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleIdParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRolePageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 账户角色关联表 服务类
 */
 public interface AuthAccountRoleService extends IService<AuthAccountRole> {
-    Page<AuthAccountRole> page(AuthAccountRolePageParam authAccountRolePageParam);
+    Page<AuthAccountRole> page(AuthAccountRolePageParam req);
 
-    void add(AuthAccountRoleAddParam authAccountRoleAddParam);
+    void add(AuthAccountRoleAddParam req);
 
-    void edit(AuthAccountRoleEditParam authAccountRoleEditParam);
+    void edit(AuthAccountRoleEditParam req);
 
-    void delete(List<AuthAccountRoleIdParam> authAccountRoleIdParamList);
+    void delete(List<String> ids);
 
-    AuthAccountRole detail(AuthAccountRoleIdParam authAccountRoleIdParam);
+    AuthAccountRole detail(String id);
 
     List<AuthAccountRole> latest(int n);
 

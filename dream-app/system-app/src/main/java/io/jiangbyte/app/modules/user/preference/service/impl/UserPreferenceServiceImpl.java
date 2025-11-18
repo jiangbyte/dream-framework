@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.user.preference.entity.UserPreference;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceAddParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceEditParam;
-import io.jiangbyte.app.modules.user.preference.param.UserPreferenceIdParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferencePageParam;
 import io.jiangbyte.app.modules.user.preference.mapper.UserPreferenceMapper;
 import io.jiangbyte.app.modules.user.preference.service.UserPreferenceService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class UserPreferenceServiceImpl extends ServiceImpl<UserPreferenceMapper, UserPreference> implements UserPreferenceService {
 
     @Override
-    public Page<UserPreference> page(UserPreferencePageParam userPreferencePageParam) {
+    public Page<UserPreference> page(UserPreferencePageParam req) {
         QueryWrapper<UserPreference> queryWrapper = new QueryWrapper<UserPreference>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(userPreferencePageParam.getSortField(), userPreferencePageParam.getSortOrder()) && ISortOrderEnum.isValid(userPreferencePageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    userPreferencePageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(userPreferencePageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(userPreferencePageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(userPreferencePageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(UserPreferenceAddParam userPreferenceAddParam) {
-        UserPreference bean = BeanUtil.toBean(userPreferenceAddParam, UserPreference.class);
+    public void add(UserPreferenceAddParam req) {
+        UserPreference bean = BeanUtil.toBean(req, UserPreference.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(UserPreferenceEditParam userPreferenceEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<UserPreference>().eq(UserPreference::getId, userPreferenceEditParam.getId()))) {
+    public void edit(UserPreferenceEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<UserPreference>().eq(UserPreference::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        UserPreference bean = BeanUtil.toBean(userPreferenceEditParam, UserPreference.class);
-        BeanUtil.copyProperties(userPreferenceEditParam, bean);
+        UserPreference bean = BeanUtil.toBean(req, UserPreference.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<UserPreferenceIdParam> userPreferenceIdParamList) {
-        if (ObjectUtil.isEmpty(userPreferenceIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(userPreferenceIdParamList, UserPreferenceIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public UserPreference detail(UserPreferenceIdParam userPreferenceIdParam) {
-        UserPreference userPreference = this.getById(userPreferenceIdParam.getId());
+    public UserPreference detail(String id) {
+        UserPreference userPreference = this.getById(id);
         if (ObjectUtil.isEmpty(userPreference)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

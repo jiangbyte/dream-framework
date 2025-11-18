@@ -2,6 +2,7 @@ package io.jiangbyte.app.modules.access.controller;
 
 import io.jiangbyte.app.modules.access.param.*;
 import io.jiangbyte.app.modules.access.service.AccessService;
+import io.jiangbyte.framework.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,19 +29,20 @@ public class AccessController {
 
     @Operation(summary = "获取验证码")
     @GetMapping("/access/captcha")
-    public CaptchaResp captcha() {
-        return accessService.captcha();
+    public Result<?> captcha() {
+        return Result.success(accessService.captcha());
     }
 
     @Operation(summary = "登录")
     @PostMapping("/access/login")
-    public LoginResp login(@RequestBody @Valid LoginReq loginReq) {
-        return accessService.doLogin(loginReq);
+    public Result<?> login(@RequestBody @Valid LoginReq loginReq) {
+        return Result.success(accessService.doLogin(loginReq));
     }
 
     @Operation(summary = "注册")
     @PostMapping("/access/register")
-    public RegisterResp register(@RequestBody @Valid RegisterReq registerReq) {
-        return accessService.doRegister(registerReq);
+    public Result<?>  register(@RequestBody @Valid RegisterReq registerReq) {
+        return Result.success(accessService.doRegister(registerReq));
     }
+
 }

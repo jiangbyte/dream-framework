@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.auth.account.entity.AuthAccount;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountIdParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 核心账户表 服务类
 */
 public interface AuthAccountService extends IService<AuthAccount> {
-    Page<AuthAccount> page(AuthAccountPageParam authAccountPageParam);
+    Page<AuthAccount> page(AuthAccountPageParam req);
 
-    void add(AuthAccountAddParam authAccountAddParam);
+    void add(AuthAccountAddParam req);
 
-    void edit(AuthAccountEditParam authAccountEditParam);
+    void edit(AuthAccountEditParam req);
 
-    void delete(List<AuthAccountIdParam> authAccountIdParamList);
+    void delete(List<String> ids);
 
-    AuthAccount detail(AuthAccountIdParam authAccountIdParam);
+    AuthAccount detail(String id);
 
     List<AuthAccount> latest(int n);
 

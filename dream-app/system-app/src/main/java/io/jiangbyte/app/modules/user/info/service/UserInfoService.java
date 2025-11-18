@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.user.info.entity.UserInfo;
 import io.jiangbyte.app.modules.user.info.param.UserInfoAddParam;
 import io.jiangbyte.app.modules.user.info.param.UserInfoEditParam;
-import io.jiangbyte.app.modules.user.info.param.UserInfoIdParam;
 import io.jiangbyte.app.modules.user.info.param.UserInfoPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 用户基本信息表 服务类
 */
 public interface UserInfoService extends IService<UserInfo> {
-    Page<UserInfo> page(UserInfoPageParam userInfoPageParam);
+    Page<UserInfo> page(UserInfoPageParam req);
 
-    void add(UserInfoAddParam userInfoAddParam);
+    void add(UserInfoAddParam req);
 
-    void edit(UserInfoEditParam userInfoEditParam);
+    void edit(UserInfoEditParam req);
 
-    void delete(List<UserInfoIdParam> userInfoIdParamList);
+    void delete(List<String> ids);
 
-    UserInfo detail(UserInfoIdParam userInfoIdParam);
+    UserInfo detail(String id);
 
     List<UserInfo> latest(int n);
 

@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.config.group.entity.ConfigGroup;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupAddParam;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupEditParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupIdParam;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupPageParam;
 import io.jiangbyte.app.modules.config.group.mapper.ConfigGroupMapper;
 import io.jiangbyte.app.modules.config.group.service.ConfigGroupService;
@@ -39,58 +38,56 @@ import java.util.*;
 public class ConfigGroupServiceImpl extends ServiceImpl<ConfigGroupMapper, ConfigGroup> implements ConfigGroupService {
 
     @Override
-    public Page<ConfigGroup> page(ConfigGroupPageParam configGroupPageParam) {
+    public Page<ConfigGroup> page(ConfigGroupPageParam req) {
         QueryWrapper<ConfigGroup> queryWrapper = new QueryWrapper<ConfigGroup>().checkSqlInjection();
-        // 关键字
-        if (ObjectUtil.isNotEmpty(configGroupPageParam.getKeyword())) {
-            queryWrapper.lambda().like(ConfigGroup::getName, configGroupPageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(ConfigGroup::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(configGroupPageParam.getSortField(), configGroupPageParam.getSortOrder()) && ISortOrderEnum.isValid(configGroupPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    configGroupPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(configGroupPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         } else {
             queryWrapper.lambda().orderByAsc(ConfigGroup::getSort);
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(configGroupPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(configGroupPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(ConfigGroupAddParam configGroupAddParam) {
-        ConfigGroup bean = BeanUtil.toBean(configGroupAddParam, ConfigGroup.class);
+    public void add(ConfigGroupAddParam req) {
+        ConfigGroup bean = BeanUtil.toBean(req, ConfigGroup.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(ConfigGroupEditParam configGroupEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<ConfigGroup>().eq(ConfigGroup::getId, configGroupEditParam.getId()))) {
+    public void edit(ConfigGroupEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<ConfigGroup>().eq(ConfigGroup::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        ConfigGroup bean = BeanUtil.toBean(configGroupEditParam, ConfigGroup.class);
-        BeanUtil.copyProperties(configGroupEditParam, bean);
+        ConfigGroup bean = BeanUtil.toBean(req, ConfigGroup.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<ConfigGroupIdParam> configGroupIdParamList) {
-        if (ObjectUtil.isEmpty(configGroupIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(configGroupIdParamList, ConfigGroupIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public ConfigGroup detail(ConfigGroupIdParam configGroupIdParam) {
-        ConfigGroup configGroup = this.getById(configGroupIdParam.getId());
+    public ConfigGroup detail(String id) {
+        ConfigGroup configGroup = this.getById(id);
         if (ObjectUtil.isEmpty(configGroup)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

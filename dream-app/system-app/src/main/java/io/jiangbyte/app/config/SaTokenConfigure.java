@@ -59,10 +59,8 @@ public class SaTokenConfigure implements WebMvcConfigurer {
 
                     // 如果是预检请求，则立即返回到前端
                     SaRouter.match(SaHttpMethod.OPTIONS)
-                            .free(r -> log.info("OPTIONS 预检请求(不做处理) 请求 path={}  提交 token={}", SaHolder.getRequest().getRequestPath(), StpUtil.getTokenValue()))
                             .back();
                 })
-//                .setError(Throwable::getMessage);
                 .setError(e -> JSONUtil.toJsonStr(Result.failure(ResultCode.UNAUTHORIZED, ResultCode.UNAUTHORIZED.getMessage())));
     }
 }

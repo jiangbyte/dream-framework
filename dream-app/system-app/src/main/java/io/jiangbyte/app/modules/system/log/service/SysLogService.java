@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.system.log.entity.SysLog;
 import io.jiangbyte.app.modules.system.log.param.SysLogAddParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogEditParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogIdParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 系统活动日志记录表 服务类
 */
 public interface SysLogService extends IService<SysLog> {
-    Page<SysLog> page(SysLogPageParam sysLogPageParam);
+    Page<SysLog> page(SysLogPageParam req);
 
-    void add(SysLogAddParam sysLogAddParam);
+    void add(SysLogAddParam req);
 
-    void edit(SysLogEditParam sysLogEditParam);
+    void edit(SysLogEditParam req);
 
-    void delete(List<SysLogIdParam> sysLogIdParamList);
+    void delete(List<String> ids);
 
-    SysLog detail(SysLogIdParam sysLogIdParam);
+    SysLog detail(String id);
 
     List<SysLog> latest(int n);
 

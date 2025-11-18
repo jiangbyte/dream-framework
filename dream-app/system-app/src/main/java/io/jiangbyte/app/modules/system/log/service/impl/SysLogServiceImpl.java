@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.system.log.entity.SysLog;
 import io.jiangbyte.app.modules.system.log.param.SysLogAddParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogEditParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogIdParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogPageParam;
 import io.jiangbyte.app.modules.system.log.mapper.SysLogMapper;
 import io.jiangbyte.app.modules.system.log.service.SysLogService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> implements SysLogService {
 
     @Override
-    public Page<SysLog> page(SysLogPageParam sysLogPageParam) {
+    public Page<SysLog> page(SysLogPageParam req) {
         QueryWrapper<SysLog> queryWrapper = new QueryWrapper<SysLog>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(sysLogPageParam.getSortField(), sysLogPageParam.getSortOrder()) && ISortOrderEnum.isValid(sysLogPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    sysLogPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(sysLogPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(sysLogPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(sysLogPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(SysLogAddParam sysLogAddParam) {
-        SysLog bean = BeanUtil.toBean(sysLogAddParam, SysLog.class);
+    public void add(SysLogAddParam req) {
+        SysLog bean = BeanUtil.toBean(req, SysLog.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(SysLogEditParam sysLogEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<SysLog>().eq(SysLog::getId, sysLogEditParam.getId()))) {
+    public void edit(SysLogEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<SysLog>().eq(SysLog::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        SysLog bean = BeanUtil.toBean(sysLogEditParam, SysLog.class);
-        BeanUtil.copyProperties(sysLogEditParam, bean);
+        SysLog bean = BeanUtil.toBean(req, SysLog.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<SysLogIdParam> sysLogIdParamList) {
-        if (ObjectUtil.isEmpty(sysLogIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(sysLogIdParamList, SysLogIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public SysLog detail(SysLogIdParam sysLogIdParam) {
-        SysLog sysLog = this.getById(sysLogIdParam.getId());
+    public SysLog detail(String id) {
+        SysLog sysLog = this.getById(id);
         if (ObjectUtil.isEmpty(sysLog)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

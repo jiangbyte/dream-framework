@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.jiangbyte.app.modules.system.menu.mapper.SysMenuMapper">
 
+    <select id="selectMenusByAccountId" resultType="io.jiangbyte.app.modules.system.menu.entity.SysMenu">
+        SELECT DISTINCT sm.*
+        FROM sys_menu sm
+                 JOIN auth_role_menu arm ON sm.id = arm.menu_id
+                 JOIN auth_account_role aar ON arm.role_id = aar.role_id
+        WHERE aar.account_id = #{accountId}
+        ORDER BY sm.sort ASC, sm.id ASC
+    </select>
+
 </mapper>

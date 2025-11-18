@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.auth.reset.entity.AuthPasswordReset;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetAddParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetEditParam;
-import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetIdParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetPageParam;
 import io.jiangbyte.app.modules.auth.reset.mapper.AuthPasswordResetMapper;
 import io.jiangbyte.app.modules.auth.reset.service.AuthPasswordResetService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class AuthPasswordResetServiceImpl extends ServiceImpl<AuthPasswordResetMapper, AuthPasswordReset> implements AuthPasswordResetService {
 
     @Override
-    public Page<AuthPasswordReset> page(AuthPasswordResetPageParam authPasswordResetPageParam) {
+    public Page<AuthPasswordReset> page(AuthPasswordResetPageParam req) {
         QueryWrapper<AuthPasswordReset> queryWrapper = new QueryWrapper<AuthPasswordReset>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(authPasswordResetPageParam.getSortField(), authPasswordResetPageParam.getSortOrder()) && ISortOrderEnum.isValid(authPasswordResetPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    authPasswordResetPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authPasswordResetPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authPasswordResetPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authPasswordResetPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthPasswordResetAddParam authPasswordResetAddParam) {
-        AuthPasswordReset bean = BeanUtil.toBean(authPasswordResetAddParam, AuthPasswordReset.class);
+    public void add(AuthPasswordResetAddParam req) {
+        AuthPasswordReset bean = BeanUtil.toBean(req, AuthPasswordReset.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthPasswordResetEditParam authPasswordResetEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthPasswordReset>().eq(AuthPasswordReset::getId, authPasswordResetEditParam.getId()))) {
+    public void edit(AuthPasswordResetEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthPasswordReset>().eq(AuthPasswordReset::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthPasswordReset bean = BeanUtil.toBean(authPasswordResetEditParam, AuthPasswordReset.class);
-        BeanUtil.copyProperties(authPasswordResetEditParam, bean);
+        AuthPasswordReset bean = BeanUtil.toBean(req, AuthPasswordReset.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthPasswordResetIdParam> authPasswordResetIdParamList) {
-        if (ObjectUtil.isEmpty(authPasswordResetIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authPasswordResetIdParamList, AuthPasswordResetIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthPasswordReset detail(AuthPasswordResetIdParam authPasswordResetIdParam) {
-        AuthPasswordReset authPasswordReset = this.getById(authPasswordResetIdParam.getId());
+    public AuthPasswordReset detail(String id) {
+        AuthPasswordReset authPasswordReset = this.getById(id);
         if (ObjectUtil.isEmpty(authPasswordReset)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

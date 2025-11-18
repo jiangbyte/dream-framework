@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import ${package.Entity}.${entity};
 import ${package.AddParam}.${entity}AddParam;
 import ${package.EditParam}.${entity}EditParam;
-import ${package.IdParam}.${entity}IdParam;
 import ${package.PageParam}.${entity}PageParam;
 
 import java.util.List;
@@ -16,16 +15,16 @@ import java.util.List;
 * @date ${date}
 * @description ${table.comment!} 服务类
 */
-public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
-    Page<${entity}> page(${entity}PageParam ${table.entityPath}PageParam);
+public interface ${entity}Service extends ${superServiceClass}<${entity}> {
+    Page<${entity}> page(${entity}PageParam req);
 
-    void add(${entity}AddParam ${table.entityPath}AddParam);
+    void add(${entity}AddParam req);
 
-    void edit(${entity}EditParam ${table.entityPath}EditParam);
+    void edit(${entity}EditParam req);
 
-    void delete(List<${entity}IdParam> ${table.entityPath}IdParamList);
+    void delete(List<String> ids);
 
-    ${entity} detail(${entity}IdParam ${table.entityPath}IdParam);
+    ${entity} detail(String id);
 
     List<${entity}> latest(int n);
 

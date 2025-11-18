@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class ConfigItemController {
     @Operation(summary = "获取系统配置分页")
     @SaCheckPermission("/config/item/page")
     @GetMapping("/config/item/page")
-    public Result<?> page(@ParameterObject ConfigItemPageParam configItemPageParam) {
-        return Result.success(configItemService.page(configItemPageParam));
+    public Result<?> page(@ParameterObject ConfigItemPageParam req) {
+        return Result.success(configItemService.page(req));
     }
 
     @Operation(summary = "添加系统配置")
     @SaCheckPermission("/config/item/add")
     @PostMapping("/config/item/add")
-    public Result<?> add(@RequestBody @Valid ConfigItemAddParam configItemAddParam) {
-        configItemService.add(configItemAddParam);
+    public Result<?> add(@RequestBody @Valid ConfigItemAddParam req) {
+        configItemService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑系统配置")
     @SaCheckPermission("/config/item/edit")
     @PostMapping("/config/item/edit")
-    public Result<?> edit(@RequestBody @Valid ConfigItemEditParam configItemEditParam) {
-        configItemService.edit(configItemEditParam);
+    public Result<?> edit(@RequestBody @Valid ConfigItemEditParam req) {
+        configItemService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除系统配置")
     @SaCheckPermission("/config/item/delete")
     @PostMapping("/config/item/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<ConfigItemIdParam> configItemIdParam) {
-        configItemService.delete(configItemIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        configItemService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取系统配置详情")
     @SaCheckPermission("/config/item/detail")
-    @GetMapping("/config/item/detail")
-    public Result<?> detail(@ParameterObject @Valid ConfigItemIdParam configItemIdParam) {
-        return Result.success(configItemService.detail(configItemIdParam));
+    @GetMapping("/config/item/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(configItemService.detail(id));
     }
 
     @Operation(summary = "获取系统配置N最新")

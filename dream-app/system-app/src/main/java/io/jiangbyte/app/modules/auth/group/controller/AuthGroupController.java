@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupPageParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupAddParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupEditParam;
-import io.jiangbyte.app.modules.auth.group.param.AuthGroupIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class AuthGroupController {
     @Operation(summary = "获取用户组分页")
     @SaCheckPermission("/auth/group/page")
     @GetMapping("/auth/group/page")
-    public Result<?> page(@ParameterObject AuthGroupPageParam authGroupPageParam) {
-        return Result.success(authGroupService.page(authGroupPageParam));
+    public Result<?> page(@ParameterObject AuthGroupPageParam req) {
+        return Result.success(authGroupService.page(req));
     }
 
     @Operation(summary = "添加用户组")
     @SaCheckPermission("/auth/group/add")
     @PostMapping("/auth/group/add")
-    public Result<?> add(@RequestBody @Valid AuthGroupAddParam authGroupAddParam) {
-        authGroupService.add(authGroupAddParam);
+    public Result<?> add(@RequestBody @Valid AuthGroupAddParam req) {
+        authGroupService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑用户组")
     @SaCheckPermission("/auth/group/edit")
     @PostMapping("/auth/group/edit")
-    public Result<?> edit(@RequestBody @Valid AuthGroupEditParam authGroupEditParam) {
-        authGroupService.edit(authGroupEditParam);
+    public Result<?> edit(@RequestBody @Valid AuthGroupEditParam req) {
+        authGroupService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除用户组")
     @SaCheckPermission("/auth/group/delete")
     @PostMapping("/auth/group/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<AuthGroupIdParam> authGroupIdParam) {
-        authGroupService.delete(authGroupIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        authGroupService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取用户组详情")
     @SaCheckPermission("/auth/group/detail")
-    @GetMapping("/auth/group/detail")
-    public Result<?> detail(@ParameterObject @Valid AuthGroupIdParam authGroupIdParam) {
-        return Result.success(authGroupService.detail(authGroupIdParam));
+    @GetMapping("/auth/group/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(authGroupService.detail(id));
     }
 
     @Operation(summary = "获取用户组N最新")

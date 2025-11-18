@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.config.group.entity.ConfigGroup;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupAddParam;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupEditParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupIdParam;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 配置分组表 服务类
 */
 public interface ConfigGroupService extends IService<ConfigGroup> {
-    Page<ConfigGroup> page(ConfigGroupPageParam configGroupPageParam);
+    Page<ConfigGroup> page(ConfigGroupPageParam req);
 
-    void add(ConfigGroupAddParam configGroupAddParam);
+    void add(ConfigGroupAddParam req);
 
-    void edit(ConfigGroupEditParam configGroupEditParam);
+    void edit(ConfigGroupEditParam req);
 
-    void delete(List<ConfigGroupIdParam> configGroupIdParamList);
+    void delete(List<String> ids);
 
-    ConfigGroup detail(ConfigGroupIdParam configGroupIdParam);
+    ConfigGroup detail(String id);
 
     List<ConfigGroup> latest(int n);
 

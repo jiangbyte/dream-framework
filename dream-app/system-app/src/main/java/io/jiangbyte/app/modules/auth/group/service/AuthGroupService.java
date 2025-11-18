@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.auth.group.entity.AuthGroup;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupAddParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupEditParam;
-import io.jiangbyte.app.modules.auth.group.param.AuthGroupIdParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 用户组表 服务类
 */
 public interface AuthGroupService extends IService<AuthGroup> {
-    Page<AuthGroup> page(AuthGroupPageParam authGroupPageParam);
+    Page<AuthGroup> page(AuthGroupPageParam req);
 
-    void add(AuthGroupAddParam authGroupAddParam);
+    void add(AuthGroupAddParam req);
 
-    void edit(AuthGroupEditParam authGroupEditParam);
+    void edit(AuthGroupEditParam req);
 
-    void delete(List<AuthGroupIdParam> authGroupIdParamList);
+    void delete(List<String> ids);
 
-    AuthGroup detail(AuthGroupIdParam authGroupIdParam);
+    AuthGroup detail(String id);
 
     List<AuthGroup> latest(int n);
 

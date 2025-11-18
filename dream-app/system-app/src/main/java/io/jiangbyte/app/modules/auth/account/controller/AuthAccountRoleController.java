@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRolePageParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountRoleIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class AuthAccountRoleController {
     @Operation(summary = "获取账户角色关联分页")
     @SaCheckPermission("/auth/account/role/page")
     @GetMapping("/auth/account/role/page")
-    public Result<?> page(@ParameterObject AuthAccountRolePageParam authAccountRolePageParam) {
-        return Result.success(authAccountRoleService.page(authAccountRolePageParam));
+    public Result<?> page(@ParameterObject AuthAccountRolePageParam req) {
+        return Result.success(authAccountRoleService.page(req));
     }
 
     @Operation(summary = "添加账户角色关联")
     @SaCheckPermission("/auth/account/role/add")
     @PostMapping("/auth/account/role/add")
-    public Result<?> add(@RequestBody @Valid AuthAccountRoleAddParam authAccountRoleAddParam) {
-        authAccountRoleService.add(authAccountRoleAddParam);
+    public Result<?> add(@RequestBody @Valid AuthAccountRoleAddParam req) {
+        authAccountRoleService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑账户角色关联")
     @SaCheckPermission("/auth/account/role/edit")
     @PostMapping("/auth/account/role/edit")
-    public Result<?> edit(@RequestBody @Valid AuthAccountRoleEditParam authAccountRoleEditParam) {
-        authAccountRoleService.edit(authAccountRoleEditParam);
+    public Result<?> edit(@RequestBody @Valid AuthAccountRoleEditParam req) {
+        authAccountRoleService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除账户角色关联")
     @SaCheckPermission("/auth/account/role/delete")
     @PostMapping("/auth/account/role/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<AuthAccountRoleIdParam> authAccountRoleIdParam) {
-        authAccountRoleService.delete(authAccountRoleIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        authAccountRoleService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取账户角色关联详情")
     @SaCheckPermission("/auth/account/role/detail")
-    @GetMapping("/auth/account/role/detail")
-    public Result<?> detail(@ParameterObject @Valid AuthAccountRoleIdParam authAccountRoleIdParam) {
-        return Result.success(authAccountRoleService.detail(authAccountRoleIdParam));
+    @GetMapping("/auth/account/role/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(authAccountRoleService.detail(id));
     }
 
     @Operation(summary = "获取账户角色关联N最新")

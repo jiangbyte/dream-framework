@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.config.item.entity.ConfigItem;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemIdParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
 import io.jiangbyte.app.modules.config.item.mapper.ConfigItemMapper;
 import io.jiangbyte.app.modules.config.item.service.ConfigItemService;
@@ -39,58 +38,56 @@ import java.util.*;
 public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigItem> implements ConfigItemService {
 
     @Override
-    public Page<ConfigItem> page(ConfigItemPageParam configItemPageParam) {
+    public Page<ConfigItem> page(ConfigItemPageParam req) {
         QueryWrapper<ConfigItem> queryWrapper = new QueryWrapper<ConfigItem>().checkSqlInjection();
-        // 关键字
-        if (ObjectUtil.isNotEmpty(configItemPageParam.getKeyword())) {
-            queryWrapper.lambda().like(ConfigItem::getName, configItemPageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(ConfigItem::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(configItemPageParam.getSortField(), configItemPageParam.getSortOrder()) && ISortOrderEnum.isValid(configItemPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    configItemPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(configItemPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         } else {
             queryWrapper.lambda().orderByAsc(ConfigItem::getSort);
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(configItemPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(configItemPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(ConfigItemAddParam configItemAddParam) {
-        ConfigItem bean = BeanUtil.toBean(configItemAddParam, ConfigItem.class);
+    public void add(ConfigItemAddParam req) {
+        ConfigItem bean = BeanUtil.toBean(req, ConfigItem.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(ConfigItemEditParam configItemEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<ConfigItem>().eq(ConfigItem::getId, configItemEditParam.getId()))) {
+    public void edit(ConfigItemEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<ConfigItem>().eq(ConfigItem::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        ConfigItem bean = BeanUtil.toBean(configItemEditParam, ConfigItem.class);
-        BeanUtil.copyProperties(configItemEditParam, bean);
+        ConfigItem bean = BeanUtil.toBean(req, ConfigItem.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<ConfigItemIdParam> configItemIdParamList) {
-        if (ObjectUtil.isEmpty(configItemIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(configItemIdParamList, ConfigItemIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public ConfigItem detail(ConfigItemIdParam configItemIdParam) {
-        ConfigItem configItem = this.getById(configItemIdParam.getId());
+    public ConfigItem detail(String id) {
+        ConfigItem configItem = this.getById(id);
         if (ObjectUtil.isEmpty(configItem)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

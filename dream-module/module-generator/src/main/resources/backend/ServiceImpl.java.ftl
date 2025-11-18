@@ -12,10 +12,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${package.Entity}.${entity};
 import ${package.AddParam}.${entity}AddParam;
 import ${package.EditParam}.${entity}EditParam;
-import ${package.IdParam}.${entity}IdParam;
 import ${package.PageParam}.${entity}PageParam;
 import ${package.Mapper}.${table.mapperName};
-import ${package.Service}.${table.serviceName};
+import ${package.Service}.${entity}Service;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -36,72 +35,69 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+public class ${entity}ServiceImpl extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${entity}Service {
 
     @Override
-    public Page<${entity}> page(${entity}PageParam ${table.entityPath}PageParam) {
+    public Page<${entity}> page(${entity}PageParam req) {
         QueryWrapper<${entity}> queryWrapper = new QueryWrapper<${entity}>().checkSqlInjection();
 <#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
     <#if ["title"]?seq_contains(field.propertyName)>
-        // 关键字
-        if (ObjectUtil.isNotEmpty(${table.entityPath}PageParam.getKeyword())) {
-            queryWrapper.lambda().like(${entity}::getTitle, ${table.entityPath}PageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(${entity}::getTitle, req.getKeyword());
         }
     <#elseif ["name"]?seq_contains(field.propertyName)>
-        // 关键字
-        if (ObjectUtil.isNotEmpty(${table.entityPath}PageParam.getKeyword())) {
-            queryWrapper.lambda().like(${entity}::getName, ${table.entityPath}PageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(${entity}::getName, req.getKeyword());
         }
     </#if>
 </#list>
 <#------------  END 字段循环遍历  ---------->
-        if (ObjectUtil.isAllNotEmpty(${table.entityPath}PageParam.getSortField(), ${table.entityPath}PageParam.getSortOrder()) && ISortOrderEnum.isValid(${table.entityPath}PageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    ${table.entityPath}PageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(${table.entityPath}PageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }<#list table.fields as field><#if ["sort"]?seq_contains(field.propertyName)> else {
             queryWrapper.lambda().orderByAsc(${entity}::getSort);
         }</#if></#list>
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(${table.entityPath}PageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(${table.entityPath}PageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(${entity}AddParam ${table.entityPath}AddParam) {
-        ${entity} bean = BeanUtil.toBean(${table.entityPath}AddParam, ${entity}.class);
+    public void add(${entity}AddParam req) {
+        ${entity} bean = BeanUtil.toBean(req, ${entity}.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(${entity}EditParam ${table.entityPath}EditParam) {
-        if (!this.exists(new LambdaQueryWrapper<${entity}>().eq(${entity}::getId, ${table.entityPath}EditParam.getId()))) {
+    public void edit(${entity}EditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<${entity}>().eq(${entity}::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        ${entity} bean = BeanUtil.toBean(${table.entityPath}EditParam, ${entity}.class);
-        BeanUtil.copyProperties(${table.entityPath}EditParam, bean);
+        ${entity} bean = BeanUtil.toBean(req, ${entity}.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<${entity}IdParam> ${table.entityPath}IdParamList) {
-        if (ObjectUtil.isEmpty(${table.entityPath}IdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(${table.entityPath}IdParamList, ${entity}IdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public ${entity} detail(${entity}IdParam ${table.entityPath}IdParam) {
-        ${entity} ${table.entityPath} = this.getById(${table.entityPath}IdParam.getId());
+    public ${entity} detail(String id) {
+        ${entity} ${table.entityPath} = this.getById(id);
         if (ObjectUtil.isEmpty(${table.entityPath})) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

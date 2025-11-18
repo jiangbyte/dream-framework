@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountPageParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountAddParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountEditParam;
-import io.jiangbyte.app.modules.auth.account.param.AuthAccountIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class AuthAccountController {
     @Operation(summary = "获取核心账户分页")
     @SaCheckPermission("/auth/account/page")
     @GetMapping("/auth/account/page")
-    public Result<?> page(@ParameterObject AuthAccountPageParam authAccountPageParam) {
-        return Result.success(authAccountService.page(authAccountPageParam));
+    public Result<?> page(@ParameterObject AuthAccountPageParam req) {
+        return Result.success(authAccountService.page(req));
     }
 
     @Operation(summary = "添加核心账户")
     @SaCheckPermission("/auth/account/add")
     @PostMapping("/auth/account/add")
-    public Result<?> add(@RequestBody @Valid AuthAccountAddParam authAccountAddParam) {
-        authAccountService.add(authAccountAddParam);
+    public Result<?> add(@RequestBody @Valid AuthAccountAddParam req) {
+        authAccountService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑核心账户")
     @SaCheckPermission("/auth/account/edit")
     @PostMapping("/auth/account/edit")
-    public Result<?> edit(@RequestBody @Valid AuthAccountEditParam authAccountEditParam) {
-        authAccountService.edit(authAccountEditParam);
+    public Result<?> edit(@RequestBody @Valid AuthAccountEditParam req) {
+        authAccountService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除核心账户")
     @SaCheckPermission("/auth/account/delete")
     @PostMapping("/auth/account/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<AuthAccountIdParam> authAccountIdParam) {
-        authAccountService.delete(authAccountIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        authAccountService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取核心账户详情")
     @SaCheckPermission("/auth/account/detail")
-    @GetMapping("/auth/account/detail")
-    public Result<?> detail(@ParameterObject @Valid AuthAccountIdParam authAccountIdParam) {
-        return Result.success(authAccountService.detail(authAccountIdParam));
+    @GetMapping("/auth/account/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(authAccountService.detail(id));
     }
 
     @Operation(summary = "获取核心账户N最新")

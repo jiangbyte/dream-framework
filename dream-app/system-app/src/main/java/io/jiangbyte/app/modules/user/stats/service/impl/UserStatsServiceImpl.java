@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.user.stats.entity.UserStats;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsAddParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsEditParam;
-import io.jiangbyte.app.modules.user.stats.param.UserStatsIdParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsPageParam;
 import io.jiangbyte.app.modules.user.stats.mapper.UserStatsMapper;
 import io.jiangbyte.app.modules.user.stats.service.UserStatsService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class UserStatsServiceImpl extends ServiceImpl<UserStatsMapper, UserStats> implements UserStatsService {
 
     @Override
-    public Page<UserStats> page(UserStatsPageParam userStatsPageParam) {
+    public Page<UserStats> page(UserStatsPageParam req) {
         QueryWrapper<UserStats> queryWrapper = new QueryWrapper<UserStats>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(userStatsPageParam.getSortField(), userStatsPageParam.getSortOrder()) && ISortOrderEnum.isValid(userStatsPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    userStatsPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(userStatsPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(userStatsPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(userStatsPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(UserStatsAddParam userStatsAddParam) {
-        UserStats bean = BeanUtil.toBean(userStatsAddParam, UserStats.class);
+    public void add(UserStatsAddParam req) {
+        UserStats bean = BeanUtil.toBean(req, UserStats.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(UserStatsEditParam userStatsEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<UserStats>().eq(UserStats::getId, userStatsEditParam.getId()))) {
+    public void edit(UserStatsEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<UserStats>().eq(UserStats::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        UserStats bean = BeanUtil.toBean(userStatsEditParam, UserStats.class);
-        BeanUtil.copyProperties(userStatsEditParam, bean);
+        UserStats bean = BeanUtil.toBean(req, UserStats.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<UserStatsIdParam> userStatsIdParamList) {
-        if (ObjectUtil.isEmpty(userStatsIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(userStatsIdParamList, UserStatsIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public UserStats detail(UserStatsIdParam userStatsIdParam) {
-        UserStats userStats = this.getById(userStatsIdParam.getId());
+    public UserStats detail(String id) {
+        UserStats userStats = this.getById(id);
         if (ObjectUtil.isEmpty(userStats)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

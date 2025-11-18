@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferencePageParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceAddParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceEditParam;
-import io.jiangbyte.app.modules.user.preference.param.UserPreferenceIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class UserPreferenceController {
     @Operation(summary = "获取用户偏好设置分页")
     @SaCheckPermission("/user/preference/page")
     @GetMapping("/user/preference/page")
-    public Result<?> page(@ParameterObject UserPreferencePageParam userPreferencePageParam) {
-        return Result.success(userPreferenceService.page(userPreferencePageParam));
+    public Result<?> page(@ParameterObject UserPreferencePageParam req) {
+        return Result.success(userPreferenceService.page(req));
     }
 
     @Operation(summary = "添加用户偏好设置")
     @SaCheckPermission("/user/preference/add")
     @PostMapping("/user/preference/add")
-    public Result<?> add(@RequestBody @Valid UserPreferenceAddParam userPreferenceAddParam) {
-        userPreferenceService.add(userPreferenceAddParam);
+    public Result<?> add(@RequestBody @Valid UserPreferenceAddParam req) {
+        userPreferenceService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑用户偏好设置")
     @SaCheckPermission("/user/preference/edit")
     @PostMapping("/user/preference/edit")
-    public Result<?> edit(@RequestBody @Valid UserPreferenceEditParam userPreferenceEditParam) {
-        userPreferenceService.edit(userPreferenceEditParam);
+    public Result<?> edit(@RequestBody @Valid UserPreferenceEditParam req) {
+        userPreferenceService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除用户偏好设置")
     @SaCheckPermission("/user/preference/delete")
     @PostMapping("/user/preference/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<UserPreferenceIdParam> userPreferenceIdParam) {
-        userPreferenceService.delete(userPreferenceIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        userPreferenceService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取用户偏好设置详情")
     @SaCheckPermission("/user/preference/detail")
-    @GetMapping("/user/preference/detail")
-    public Result<?> detail(@ParameterObject @Valid UserPreferenceIdParam userPreferenceIdParam) {
-        return Result.success(userPreferenceService.detail(userPreferenceIdParam));
+    @GetMapping("/user/preference/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(userPreferenceService.detail(id));
     }
 
     @Operation(summary = "获取用户偏好设置N最新")

@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.system.log.param.SysLogPageParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogAddParam;
 import io.jiangbyte.app.modules.system.log.param.SysLogEditParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class SysLogController {
     @Operation(summary = "获取系统活动日志记录分页")
     @SaCheckPermission("/sys/log/page")
     @GetMapping("/sys/log/page")
-    public Result<?> page(@ParameterObject SysLogPageParam sysLogPageParam) {
-        return Result.success(sysLogService.page(sysLogPageParam));
+    public Result<?> page(@ParameterObject SysLogPageParam req) {
+        return Result.success(sysLogService.page(req));
     }
 
     @Operation(summary = "添加系统活动日志记录")
     @SaCheckPermission("/sys/log/add")
     @PostMapping("/sys/log/add")
-    public Result<?> add(@RequestBody @Valid SysLogAddParam sysLogAddParam) {
-        sysLogService.add(sysLogAddParam);
+    public Result<?> add(@RequestBody @Valid SysLogAddParam req) {
+        sysLogService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑系统活动日志记录")
     @SaCheckPermission("/sys/log/edit")
     @PostMapping("/sys/log/edit")
-    public Result<?> edit(@RequestBody @Valid SysLogEditParam sysLogEditParam) {
-        sysLogService.edit(sysLogEditParam);
+    public Result<?> edit(@RequestBody @Valid SysLogEditParam req) {
+        sysLogService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除系统活动日志记录")
     @SaCheckPermission("/sys/log/delete")
     @PostMapping("/sys/log/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<SysLogIdParam> sysLogIdParam) {
-        sysLogService.delete(sysLogIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        sysLogService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取系统活动日志记录详情")
     @SaCheckPermission("/sys/log/detail")
-    @GetMapping("/sys/log/detail")
-    public Result<?> detail(@ParameterObject @Valid SysLogIdParam sysLogIdParam) {
-        return Result.success(sysLogService.detail(sysLogIdParam));
+    @GetMapping("/sys/log/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(sysLogService.detail(id));
     }
 
     @Operation(summary = "获取系统活动日志记录N最新")

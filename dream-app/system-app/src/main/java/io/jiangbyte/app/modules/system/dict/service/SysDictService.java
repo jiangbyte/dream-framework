@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.system.dict.entity.SysDict;
 import io.jiangbyte.app.modules.system.dict.param.SysDictAddParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictEditParam;
-import io.jiangbyte.app.modules.system.dict.param.SysDictIdParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 系统字典表 服务类
 */
 public interface SysDictService extends IService<SysDict> {
-    Page<SysDict> page(SysDictPageParam sysDictPageParam);
+    Page<SysDict> page(SysDictPageParam req);
 
-    void add(SysDictAddParam sysDictAddParam);
+    void add(SysDictAddParam req);
 
-    void edit(SysDictEditParam sysDictEditParam);
+    void edit(SysDictEditParam req);
 
-    void delete(List<SysDictIdParam> sysDictIdParamList);
+    void delete(List<String> ids);
 
-    SysDict detail(SysDictIdParam sysDictIdParam);
+    SysDict detail(String id);
 
     List<SysDict> latest(int n);
 

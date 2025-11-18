@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.user.preference.entity.UserPreference;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceAddParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferenceEditParam;
-import io.jiangbyte.app.modules.user.preference.param.UserPreferenceIdParam;
 import io.jiangbyte.app.modules.user.preference.param.UserPreferencePageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 用户偏好设置表 服务类
 */
 public interface UserPreferenceService extends IService<UserPreference> {
-    Page<UserPreference> page(UserPreferencePageParam userPreferencePageParam);
+    Page<UserPreference> page(UserPreferencePageParam req);
 
-    void add(UserPreferenceAddParam userPreferenceAddParam);
+    void add(UserPreferenceAddParam req);
 
-    void edit(UserPreferenceEditParam userPreferenceEditParam);
+    void edit(UserPreferenceEditParam req);
 
-    void delete(List<UserPreferenceIdParam> userPreferenceIdParamList);
+    void delete(List<String> ids);
 
-    UserPreference detail(UserPreferenceIdParam userPreferenceIdParam);
+    UserPreference detail(String id);
 
     List<UserPreference> latest(int n);
 

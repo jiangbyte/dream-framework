@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.user.info.entity.UserInfo;
 import io.jiangbyte.app.modules.user.info.param.UserInfoAddParam;
 import io.jiangbyte.app.modules.user.info.param.UserInfoEditParam;
-import io.jiangbyte.app.modules.user.info.param.UserInfoIdParam;
 import io.jiangbyte.app.modules.user.info.param.UserInfoPageParam;
 import io.jiangbyte.app.modules.user.info.mapper.UserInfoMapper;
 import io.jiangbyte.app.modules.user.info.service.UserInfoService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     @Override
-    public Page<UserInfo> page(UserInfoPageParam userInfoPageParam) {
+    public Page<UserInfo> page(UserInfoPageParam req) {
         QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<UserInfo>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(userInfoPageParam.getSortField(), userInfoPageParam.getSortOrder()) && ISortOrderEnum.isValid(userInfoPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    userInfoPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(userInfoPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(userInfoPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(userInfoPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(UserInfoAddParam userInfoAddParam) {
-        UserInfo bean = BeanUtil.toBean(userInfoAddParam, UserInfo.class);
+    public void add(UserInfoAddParam req) {
+        UserInfo bean = BeanUtil.toBean(req, UserInfo.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(UserInfoEditParam userInfoEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getId, userInfoEditParam.getId()))) {
+    public void edit(UserInfoEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        UserInfo bean = BeanUtil.toBean(userInfoEditParam, UserInfo.class);
-        BeanUtil.copyProperties(userInfoEditParam, bean);
+        UserInfo bean = BeanUtil.toBean(req, UserInfo.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<UserInfoIdParam> userInfoIdParamList) {
-        if (ObjectUtil.isEmpty(userInfoIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(userInfoIdParamList, UserInfoIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public UserInfo detail(UserInfoIdParam userInfoIdParam) {
-        UserInfo userInfo = this.getById(userInfoIdParam.getId());
+    public UserInfo detail(String id) {
+        UserInfo userInfo = this.getById(id);
         if (ObjectUtil.isEmpty(userInfo)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

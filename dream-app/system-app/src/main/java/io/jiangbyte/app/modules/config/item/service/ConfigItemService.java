@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.config.item.entity.ConfigItem;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemIdParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 系统配置表 服务类
 */
 public interface ConfigItemService extends IService<ConfigItem> {
-    Page<ConfigItem> page(ConfigItemPageParam configItemPageParam);
+    Page<ConfigItem> page(ConfigItemPageParam req);
 
-    void add(ConfigItemAddParam configItemAddParam);
+    void add(ConfigItemAddParam req);
 
-    void edit(ConfigItemEditParam configItemEditParam);
+    void edit(ConfigItemEditParam req);
 
-    void delete(List<ConfigItemIdParam> configItemIdParamList);
+    void delete(List<String> ids);
 
-    ConfigItem detail(ConfigItemIdParam configItemIdParam);
+    ConfigItem detail(String id);
 
     List<ConfigItem> latest(int n);
 

@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.system.menu.entity.SysMenu;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuAddParam;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuEditParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuIdParam;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuPageParam;
 import io.jiangbyte.app.modules.system.menu.mapper.SysMenuMapper;
 import io.jiangbyte.app.modules.system.menu.service.SysMenuService;
@@ -20,6 +19,7 @@ import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
 import io.jiangbyte.framework.result.ResultCode;
+import io.jiangbyte.framework.utils.TreeBuilder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,62 +39,59 @@ import java.util.*;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
     @Override
-    public Page<SysMenu> page(SysMenuPageParam sysMenuPageParam) {
+    public Page<SysMenu> page(SysMenuPageParam req) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<SysMenu>().checkSqlInjection();
-        // 关键字
-        if (ObjectUtil.isNotEmpty(sysMenuPageParam.getKeyword())) {
-            queryWrapper.lambda().like(SysMenu::getName, sysMenuPageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(SysMenu::getName, req.getKeyword());
         }
-        // 关键字
-        if (ObjectUtil.isNotEmpty(sysMenuPageParam.getKeyword())) {
-            queryWrapper.lambda().like(SysMenu::getTitle, sysMenuPageParam.getKeyword());
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(SysMenu::getTitle, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(sysMenuPageParam.getSortField(), sysMenuPageParam.getSortOrder()) && ISortOrderEnum.isValid(sysMenuPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    sysMenuPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(sysMenuPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         } else {
             queryWrapper.lambda().orderByAsc(SysMenu::getSort);
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(sysMenuPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(sysMenuPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(SysMenuAddParam sysMenuAddParam) {
-        SysMenu bean = BeanUtil.toBean(sysMenuAddParam, SysMenu.class);
+    public void add(SysMenuAddParam req) {
+        SysMenu bean = BeanUtil.toBean(req, SysMenu.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(SysMenuEditParam sysMenuEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getId, sysMenuEditParam.getId()))) {
+    public void edit(SysMenuEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        SysMenu bean = BeanUtil.toBean(sysMenuEditParam, SysMenu.class);
-        BeanUtil.copyProperties(sysMenuEditParam, bean);
+        SysMenu bean = BeanUtil.toBean(req, SysMenu.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<SysMenuIdParam> sysMenuIdParamList) {
-        if (ObjectUtil.isEmpty(sysMenuIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(sysMenuIdParamList, SysMenuIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public SysMenu detail(SysMenuIdParam sysMenuIdParam) {
-        SysMenu sysMenu = this.getById(sysMenuIdParam.getId());
+    public SysMenu detail(String id) {
+        SysMenu sysMenu = this.getById(id);
         if (ObjectUtil.isEmpty(sysMenu)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
@@ -115,6 +112,27 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             .lambda()
             .orderByDesc(SysMenu::getId)
             .last("limit " + n));
+    }
+
+
+    @Override
+    public List<SysMenu> getSysMenuListTreeWithAccountID(String accountId) {
+        // 获取扁平菜单列表
+        List<SysMenu> menus = getSysMenuListWithAccountID(accountId);
+
+        // 使用TreeBuilder构建树形结构
+        TreeBuilder<SysMenu> treeBuilder = new TreeBuilder<>(
+                SysMenu::getId,
+                menu -> menu.getPid() == null ? "" : menu.getPid(),
+                SysMenu::setChildren
+        );
+
+        return treeBuilder.buildTree(menus);
+    }
+
+    @Override
+    public List<SysMenu> getSysMenuListWithAccountID(String accountId) {
+        return this.baseMapper.selectMenusByAccountId(accountId);
     }
 
 }

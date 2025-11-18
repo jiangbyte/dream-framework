@@ -9,10 +9,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.jiangbyte.app.SortUtils;
 import io.jiangbyte.app.modules.auth.role.entity.AuthRole;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleAddParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleEditParam;
-import io.jiangbyte.app.modules.auth.role.param.AuthRoleIdParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRolePageParam;
 import io.jiangbyte.app.modules.auth.role.mapper.AuthRoleMapper;
 import io.jiangbyte.app.modules.auth.role.service.AuthRoleService;
@@ -39,56 +39,50 @@ import java.util.*;
 public class AuthRoleServiceImpl extends ServiceImpl<AuthRoleMapper, AuthRole> implements AuthRoleService {
 
     @Override
-    public Page<AuthRole> page(AuthRolePageParam authRolePageParam) {
+    public Page<AuthRole> page(AuthRolePageParam req) {
         QueryWrapper<AuthRole> queryWrapper = new QueryWrapper<AuthRole>().checkSqlInjection();
-        // 关键字
-        if (ObjectUtil.isNotEmpty(authRolePageParam.getKeyword())) {
-            queryWrapper.lambda().like(AuthRole::getName, authRolePageParam.getKeyword());
-        }
-        if (ObjectUtil.isAllNotEmpty(authRolePageParam.getSortField(), authRolePageParam.getSortOrder()) && ISortOrderEnum.isValid(authRolePageParam.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    authRolePageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authRolePageParam.getSortField()));
+        if (ObjectUtil.isNotEmpty(req.getKeyword())) {
+            queryWrapper.lambda().like(AuthRole::getName, req.getKeyword());
         }
 
+        SortUtils.handleSort(AuthRole.class, queryWrapper, req.getSortField(), req.getSortOrder());
+
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authRolePageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authRolePageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthRoleAddParam authRoleAddParam) {
-        AuthRole bean = BeanUtil.toBean(authRoleAddParam, AuthRole.class);
+    public void add(AuthRoleAddParam req) {
+        AuthRole bean = BeanUtil.toBean(req, AuthRole.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthRoleEditParam authRoleEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthRole>().eq(AuthRole::getId, authRoleEditParam.getId()))) {
+    public void edit(AuthRoleEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthRole>().eq(AuthRole::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthRole bean = BeanUtil.toBean(authRoleEditParam, AuthRole.class);
-        BeanUtil.copyProperties(authRoleEditParam, bean);
+        AuthRole bean = BeanUtil.toBean(req, AuthRole.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthRoleIdParam> authRoleIdParamList) {
-        if (ObjectUtil.isEmpty(authRoleIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authRoleIdParamList, AuthRoleIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthRole detail(AuthRoleIdParam authRoleIdParam) {
-        AuthRole authRole = this.getById(authRoleIdParam.getId());
+    public AuthRole detail(String id) {
+        AuthRole authRole = this.getById(id);
         if (ObjectUtil.isEmpty(authRole)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

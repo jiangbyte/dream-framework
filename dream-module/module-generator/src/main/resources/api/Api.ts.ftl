@@ -1,38 +1,17 @@
-import { request as $alova } from '@/utils'
-
-/*
-* ${table.comment?replace('表', '')} 默认数据
-*/
-export const ${entity}DefaultData = {
-<#-- ----------  BEGIN 字段循环遍历  ---------->
-<#list table.fields as field>
-    ${field.propertyName}: <#if field.propertyType == 'String'>'',<#-- 字符串 -->
-<#elseif field.propertyType == 'Long' || field.propertyType == 'Integer' || field.propertyType == 'Short' || field.propertyType == 'Byte'>0,<#-- 所有整数类型 -->
-<#elseif field.propertyType == 'Double' || field.propertyType == 'Float' || field.propertyType == 'BigDecimal'>0.0,<#-- 浮点类型 -->
-<#elseif field.propertyType == 'Boolean'>false,<#-- 布尔值 -->
-<#elseif field.propertyType == 'LocalDateTime' || field.propertyType == 'LocalDate' || field.propertyType == 'Date'>Date.now(),<#-- 日期类型初始化为空字符串 -->
-<#elseif field.propertyType == 'List' || field.propertyType == 'Set'>[],<#-- 集合类型 -->
-<#elseif field.propertyType == 'Map' || field.propertyType == 'Object'>{},<#-- 对象类型 -->
-<#else>null,<#-- 其他类型 -->
-</#if>
-</#list>
-<#------------  END 字段循环遍历  ---------->
-}
+import { request } from '@/utils'
 
 /**
 * ${table.comment?replace('表', '')} API请求
 */
-export function use${entity}Fetch() {
-    const context = import.meta.env.VITE_MAIN_SERVICE_CONTEXT
-    const pathPrefix = context + '/api/v1/'
-    const table = '${table.name?replace('_', '/')}'
+export function use${entity}Api() {
+    const pathPrefix = '/api/v1/'
 
  return {
     /*
      * ${table.comment?replace('表', '')} 分页接口
      */
-    ${table.entityPath}Page(data: any) {
-      return $alova.Get<IResult<any>>(pathPrefix + table + '/page', {
+    Page${entity}(data: any) {
+      return request.Get<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/page', {
         params: {
         ...data,
         },
@@ -42,55 +21,43 @@ export function use${entity}Fetch() {
     /*
      * ${table.comment?replace('表', '')} 新增接口
      */
-    ${table.entityPath}Add(data: any) {
-      return $alova.Post<IResult<any>>(pathPrefix + table + '/add', data)
+    Add${entity}(data: any) {
+      return request.Post<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/add', data)
     },
 
     /*
      * ${table.comment?replace('表', '')} 修改接口
      */
-    ${table.entityPath}Edit(data: any) {
-      return $alova.Post<IResult<any>>(pathPrefix + table + '/edit', data)
+    Edit${entity}(data: any) {
+      return request.Post<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/edit', data)
     },
 
     /*
      * ${table.comment?replace('表', '')} 删除接口
      */
-    ${table.entityPath}Delete(data: any) {
-      return $alova.Post<IResult<any>>(pathPrefix + table + '/delete', data)
+    Delete${entity}(ids: string[]) {
+      return request.Post<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/delete', ids)
     },
 
     /*
      * ${table.comment?replace('表', '')} 详情接口
      */
-    ${table.entityPath}Detail(data: any) {
-      return $alova.Get<IResult<any>>(pathPrefix + table + '/detail', {
-        params: {
-        ...data,
-        },
-      })
+    Get${entity}(id: string) {
+      return request.Get<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/detail/' + id)
     },
 
     /*
     * ${table.comment?replace('表', '')} 最新接口
     */
-    ${table.entityPath}Latest(data: any) {
-    return $alova.Get<IResult<any>>(pathPrefix + table + '/latest', {
-        params: {
-        ...data,
-        },
-      })
+    Latest${entity}() {
+      return request.Get<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/latest')
     },
 
     /*
     * ${table.comment?replace('表', '')} TopN接口
     */
-    ${table.entityPath}TopN(data: any) {
-    return $alova.Get<IResult<any>>(pathPrefix + table + '/top', {
-        params: {
-        ...data,
-        },
-      })
+    Top${entity}() {
+      return request.Get<IResult<any>>(pathPrefix + '/${table.name?replace('_', '/')}/top')
     },
   }
 }

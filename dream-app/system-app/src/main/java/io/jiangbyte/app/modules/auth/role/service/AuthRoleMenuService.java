@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.auth.role.entity.AuthRoleMenu;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuAddParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuEditParam;
-import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuIdParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 角色菜单关联表 服务类
 */
 public interface AuthRoleMenuService extends IService<AuthRoleMenu> {
-    Page<AuthRoleMenu> page(AuthRoleMenuPageParam authRoleMenuPageParam);
+    Page<AuthRoleMenu> page(AuthRoleMenuPageParam req);
 
-    void add(AuthRoleMenuAddParam authRoleMenuAddParam);
+    void add(AuthRoleMenuAddParam req);
 
-    void edit(AuthRoleMenuEditParam authRoleMenuEditParam);
+    void edit(AuthRoleMenuEditParam req);
 
-    void delete(List<AuthRoleMenuIdParam> authRoleMenuIdParamList);
+    void delete(List<String> ids);
 
-    AuthRoleMenu detail(AuthRoleMenuIdParam authRoleMenuIdParam);
+    AuthRoleMenu detail(String id);
 
     List<AuthRoleMenu> latest(int n);
 

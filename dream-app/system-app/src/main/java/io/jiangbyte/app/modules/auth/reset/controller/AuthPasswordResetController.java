@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetPageParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetAddParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetEditParam;
-import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class AuthPasswordResetController {
     @Operation(summary = "获取密码重置分页")
     @SaCheckPermission("/auth/password/reset/page")
     @GetMapping("/auth/password/reset/page")
-    public Result<?> page(@ParameterObject AuthPasswordResetPageParam authPasswordResetPageParam) {
-        return Result.success(authPasswordResetService.page(authPasswordResetPageParam));
+    public Result<?> page(@ParameterObject AuthPasswordResetPageParam req) {
+        return Result.success(authPasswordResetService.page(req));
     }
 
     @Operation(summary = "添加密码重置")
     @SaCheckPermission("/auth/password/reset/add")
     @PostMapping("/auth/password/reset/add")
-    public Result<?> add(@RequestBody @Valid AuthPasswordResetAddParam authPasswordResetAddParam) {
-        authPasswordResetService.add(authPasswordResetAddParam);
+    public Result<?> add(@RequestBody @Valid AuthPasswordResetAddParam req) {
+        authPasswordResetService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑密码重置")
     @SaCheckPermission("/auth/password/reset/edit")
     @PostMapping("/auth/password/reset/edit")
-    public Result<?> edit(@RequestBody @Valid AuthPasswordResetEditParam authPasswordResetEditParam) {
-        authPasswordResetService.edit(authPasswordResetEditParam);
+    public Result<?> edit(@RequestBody @Valid AuthPasswordResetEditParam req) {
+        authPasswordResetService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除密码重置")
     @SaCheckPermission("/auth/password/reset/delete")
     @PostMapping("/auth/password/reset/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<AuthPasswordResetIdParam> authPasswordResetIdParam) {
-        authPasswordResetService.delete(authPasswordResetIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        authPasswordResetService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取密码重置详情")
     @SaCheckPermission("/auth/password/reset/detail")
-    @GetMapping("/auth/password/reset/detail")
-    public Result<?> detail(@ParameterObject @Valid AuthPasswordResetIdParam authPasswordResetIdParam) {
-        return Result.success(authPasswordResetService.detail(authPasswordResetIdParam));
+    @GetMapping("/auth/password/reset/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(authPasswordResetService.detail(id));
     }
 
     @Operation(summary = "获取密码重置N最新")

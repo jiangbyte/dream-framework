@@ -43,7 +43,7 @@ public class AccessServiceImpl implements AccessService {
 //        String imageBase64Data = circleCaptcha.getImageBase64Data();
 
         RandomGenerator randomGenerator = new RandomGenerator("0123456789", 4);
-        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(200, 100, 4, 5);
+        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(120, 40, 4, 5);
         lineCaptcha.setGenerator(randomGenerator);
         String imageBase64Data = lineCaptcha.getImageBase64Data();
 

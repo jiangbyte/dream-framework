@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.system.dict.entity.SysDict;
 import io.jiangbyte.app.modules.system.dict.param.SysDictAddParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictEditParam;
-import io.jiangbyte.app.modules.system.dict.param.SysDictIdParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictPageParam;
 import io.jiangbyte.app.modules.system.dict.mapper.SysDictMapper;
 import io.jiangbyte.app.modules.system.dict.service.SysDictService;
@@ -39,54 +38,53 @@ import java.util.*;
 public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> implements SysDictService {
 
     @Override
-    public Page<SysDict> page(SysDictPageParam sysDictPageParam) {
+    public Page<SysDict> page(SysDictPageParam req) {
         QueryWrapper<SysDict> queryWrapper = new QueryWrapper<SysDict>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(sysDictPageParam.getSortField(), sysDictPageParam.getSortOrder()) && ISortOrderEnum.isValid(sysDictPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    sysDictPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(sysDictPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         } else {
             queryWrapper.lambda().orderByAsc(SysDict::getSort);
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(sysDictPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(sysDictPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(SysDictAddParam sysDictAddParam) {
-        SysDict bean = BeanUtil.toBean(sysDictAddParam, SysDict.class);
+    public void add(SysDictAddParam req) {
+        SysDict bean = BeanUtil.toBean(req, SysDict.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(SysDictEditParam sysDictEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<SysDict>().eq(SysDict::getId, sysDictEditParam.getId()))) {
+    public void edit(SysDictEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<SysDict>().eq(SysDict::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        SysDict bean = BeanUtil.toBean(sysDictEditParam, SysDict.class);
-        BeanUtil.copyProperties(sysDictEditParam, bean);
+        SysDict bean = BeanUtil.toBean(req, SysDict.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<SysDictIdParam> sysDictIdParamList) {
-        if (ObjectUtil.isEmpty(sysDictIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(sysDictIdParamList, SysDictIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public SysDict detail(SysDictIdParam sysDictIdParam) {
-        SysDict sysDict = this.getById(sysDictIdParam.getId());
+    public SysDict detail(String id) {
+        SysDict sysDict = this.getById(id);
         if (ObjectUtil.isEmpty(sysDict)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

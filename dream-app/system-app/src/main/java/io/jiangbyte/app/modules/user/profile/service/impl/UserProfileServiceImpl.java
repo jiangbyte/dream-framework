@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.user.profile.entity.UserProfile;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileAddParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileEditParam;
-import io.jiangbyte.app.modules.user.profile.param.UserProfileIdParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfilePageParam;
 import io.jiangbyte.app.modules.user.profile.mapper.UserProfileMapper;
 import io.jiangbyte.app.modules.user.profile.service.UserProfileService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserProfile> implements UserProfileService {
 
     @Override
-    public Page<UserProfile> page(UserProfilePageParam userProfilePageParam) {
+    public Page<UserProfile> page(UserProfilePageParam req) {
         QueryWrapper<UserProfile> queryWrapper = new QueryWrapper<UserProfile>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(userProfilePageParam.getSortField(), userProfilePageParam.getSortOrder()) && ISortOrderEnum.isValid(userProfilePageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    userProfilePageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(userProfilePageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(userProfilePageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(userProfilePageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(UserProfileAddParam userProfileAddParam) {
-        UserProfile bean = BeanUtil.toBean(userProfileAddParam, UserProfile.class);
+    public void add(UserProfileAddParam req) {
+        UserProfile bean = BeanUtil.toBean(req, UserProfile.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(UserProfileEditParam userProfileEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getId, userProfileEditParam.getId()))) {
+    public void edit(UserProfileEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        UserProfile bean = BeanUtil.toBean(userProfileEditParam, UserProfile.class);
-        BeanUtil.copyProperties(userProfileEditParam, bean);
+        UserProfile bean = BeanUtil.toBean(req, UserProfile.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<UserProfileIdParam> userProfileIdParamList) {
-        if (ObjectUtil.isEmpty(userProfileIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(userProfileIdParamList, UserProfileIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public UserProfile detail(UserProfileIdParam userProfileIdParam) {
-        UserProfile userProfile = this.getById(userProfileIdParam.getId());
+    public UserProfile detail(String id) {
+        UserProfile userProfile = this.getById(id);
         if (ObjectUtil.isEmpty(userProfile)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

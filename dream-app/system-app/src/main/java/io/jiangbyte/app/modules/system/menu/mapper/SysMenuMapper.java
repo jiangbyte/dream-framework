@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 * @author Charlie Zhang
 * @version v1.0
@@ -15,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 //@CacheNamespace(implementation = MybatisPlusRedisCache.class, eviction = MybatisPlusRedisCache.class)
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
-
+    List<SysMenu> selectMenusByAccountId(String accountId);
 }

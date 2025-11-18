@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.user.stats.entity.UserStats;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsAddParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsEditParam;
-import io.jiangbyte.app.modules.user.stats.param.UserStatsIdParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsPageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 用户统计信息表 服务类
 */
 public interface UserStatsService extends IService<UserStats> {
-    Page<UserStats> page(UserStatsPageParam userStatsPageParam);
+    Page<UserStats> page(UserStatsPageParam req);
 
-    void add(UserStatsAddParam userStatsAddParam);
+    void add(UserStatsAddParam req);
 
-    void edit(UserStatsEditParam userStatsEditParam);
+    void edit(UserStatsEditParam req);
 
-    void delete(List<UserStatsIdParam> userStatsIdParamList);
+    void delete(List<String> ids);
 
-    UserStats detail(UserStatsIdParam userStatsIdParam);
+    UserStats detail(String id);
 
     List<UserStats> latest(int n);
 

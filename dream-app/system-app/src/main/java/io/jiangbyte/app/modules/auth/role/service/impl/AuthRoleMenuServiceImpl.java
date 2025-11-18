@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.auth.role.entity.AuthRoleMenu;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuAddParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuEditParam;
-import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuIdParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuPageParam;
 import io.jiangbyte.app.modules.auth.role.mapper.AuthRoleMenuMapper;
 import io.jiangbyte.app.modules.auth.role.service.AuthRoleMenuService;
@@ -39,52 +38,51 @@ import java.util.*;
 public class AuthRoleMenuServiceImpl extends ServiceImpl<AuthRoleMenuMapper, AuthRoleMenu> implements AuthRoleMenuService {
 
     @Override
-    public Page<AuthRoleMenu> page(AuthRoleMenuPageParam authRoleMenuPageParam) {
+    public Page<AuthRoleMenu> page(AuthRoleMenuPageParam req) {
         QueryWrapper<AuthRoleMenu> queryWrapper = new QueryWrapper<AuthRoleMenu>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(authRoleMenuPageParam.getSortField(), authRoleMenuPageParam.getSortOrder()) && ISortOrderEnum.isValid(authRoleMenuPageParam.getSortOrder())) {
+        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
             queryWrapper.orderBy(
                     true,
-                    authRoleMenuPageParam.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(authRoleMenuPageParam.getSortField()));
+                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
+                    StrUtil.toUnderlineCase(req.getSortField()));
         }
 
         return this.page(BasePageRequest.Page(
-                        Optional.ofNullable(authRoleMenuPageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(authRoleMenuPageParam.getSize()).orElse(10)
-                ),
+                        Optional.ofNullable(req.getCurrent()).orElse(1),
+                        Optional.ofNullable(req.getPageSize()).orElse(10)),
                 queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(AuthRoleMenuAddParam authRoleMenuAddParam) {
-        AuthRoleMenu bean = BeanUtil.toBean(authRoleMenuAddParam, AuthRoleMenu.class);
+    public void add(AuthRoleMenuAddParam req) {
+        AuthRoleMenu bean = BeanUtil.toBean(req, AuthRoleMenu.class);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(AuthRoleMenuEditParam authRoleMenuEditParam) {
-        if (!this.exists(new LambdaQueryWrapper<AuthRoleMenu>().eq(AuthRoleMenu::getId, authRoleMenuEditParam.getId()))) {
+    public void edit(AuthRoleMenuEditParam req) {
+        if (!this.exists(new LambdaQueryWrapper<AuthRoleMenu>().eq(AuthRoleMenu::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        AuthRoleMenu bean = BeanUtil.toBean(authRoleMenuEditParam, AuthRoleMenu.class);
-        BeanUtil.copyProperties(authRoleMenuEditParam, bean);
+        AuthRoleMenu bean = BeanUtil.toBean(req, AuthRoleMenu.class);
+        BeanUtil.copyProperties(req, bean);
         this.updateById(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void delete(List<AuthRoleMenuIdParam> authRoleMenuIdParamList) {
-        if (ObjectUtil.isEmpty(authRoleMenuIdParamList)) {
+    public void delete(List<String> ids) {
+        if (ObjectUtil.isEmpty(ids)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        this.removeByIds(CollStreamUtil.toList(authRoleMenuIdParamList, AuthRoleMenuIdParam::getId));
+        this.removeByIds(ids);
     }
 
     @Override
-    public AuthRoleMenu detail(AuthRoleMenuIdParam authRoleMenuIdParam) {
-        AuthRoleMenu authRoleMenu = this.getById(authRoleMenuIdParam.getId());
+    public AuthRoleMenu detail(String id) {
+        AuthRoleMenu authRoleMenu = this.getById(id);
         if (ObjectUtil.isEmpty(authRoleMenu)) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

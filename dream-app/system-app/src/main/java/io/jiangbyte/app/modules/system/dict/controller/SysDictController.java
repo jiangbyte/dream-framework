@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.system.dict.param.SysDictPageParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictAddParam;
 import io.jiangbyte.app.modules.system.dict.param.SysDictEditParam;
-import io.jiangbyte.app.modules.system.dict.param.SysDictIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class SysDictController {
     @Operation(summary = "获取系统字典分页")
     @SaCheckPermission("/sys/dict/page")
     @GetMapping("/sys/dict/page")
-    public Result<?> page(@ParameterObject SysDictPageParam sysDictPageParam) {
-        return Result.success(sysDictService.page(sysDictPageParam));
+    public Result<?> page(@ParameterObject SysDictPageParam req) {
+        return Result.success(sysDictService.page(req));
     }
 
     @Operation(summary = "添加系统字典")
     @SaCheckPermission("/sys/dict/add")
     @PostMapping("/sys/dict/add")
-    public Result<?> add(@RequestBody @Valid SysDictAddParam sysDictAddParam) {
-        sysDictService.add(sysDictAddParam);
+    public Result<?> add(@RequestBody @Valid SysDictAddParam req) {
+        sysDictService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑系统字典")
     @SaCheckPermission("/sys/dict/edit")
     @PostMapping("/sys/dict/edit")
-    public Result<?> edit(@RequestBody @Valid SysDictEditParam sysDictEditParam) {
-        sysDictService.edit(sysDictEditParam);
+    public Result<?> edit(@RequestBody @Valid SysDictEditParam req) {
+        sysDictService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除系统字典")
     @SaCheckPermission("/sys/dict/delete")
     @PostMapping("/sys/dict/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<SysDictIdParam> sysDictIdParam) {
-        sysDictService.delete(sysDictIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        sysDictService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取系统字典详情")
     @SaCheckPermission("/sys/dict/detail")
-    @GetMapping("/sys/dict/detail")
-    public Result<?> detail(@ParameterObject @Valid SysDictIdParam sysDictIdParam) {
-        return Result.success(sysDictService.detail(sysDictIdParam));
+    @GetMapping("/sys/dict/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(sysDictService.detail(id));
     }
 
     @Operation(summary = "获取系统字典N最新")

@@ -23,7 +23,7 @@ public class AuthGroupPageParam implements Serializable {
     private Integer current;
 
     @Schema(description = "每页条数")
-    private Integer size;
+    private Integer pageSize;
 
     @Schema(description = "排序字段")
     private String sortField;

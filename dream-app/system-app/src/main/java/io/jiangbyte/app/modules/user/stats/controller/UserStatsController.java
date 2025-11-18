@@ -5,7 +5,6 @@ import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsPageParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsAddParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsEditParam;
-import io.jiangbyte.app.modules.user.stats.param.UserStatsIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +38,39 @@ public class UserStatsController {
     @Operation(summary = "获取用户统计信息分页")
     @SaCheckPermission("/user/stats/page")
     @GetMapping("/user/stats/page")
-    public Result<?> page(@ParameterObject UserStatsPageParam userStatsPageParam) {
-        return Result.success(userStatsService.page(userStatsPageParam));
+    public Result<?> page(@ParameterObject UserStatsPageParam req) {
+        return Result.success(userStatsService.page(req));
     }
 
     @Operation(summary = "添加用户统计信息")
     @SaCheckPermission("/user/stats/add")
     @PostMapping("/user/stats/add")
-    public Result<?> add(@RequestBody @Valid UserStatsAddParam userStatsAddParam) {
-        userStatsService.add(userStatsAddParam);
+    public Result<?> add(@RequestBody @Valid UserStatsAddParam req) {
+        userStatsService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑用户统计信息")
     @SaCheckPermission("/user/stats/edit")
     @PostMapping("/user/stats/edit")
-    public Result<?> edit(@RequestBody @Valid UserStatsEditParam userStatsEditParam) {
-        userStatsService.edit(userStatsEditParam);
+    public Result<?> edit(@RequestBody @Valid UserStatsEditParam req) {
+        userStatsService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除用户统计信息")
     @SaCheckPermission("/user/stats/delete")
     @PostMapping("/user/stats/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<UserStatsIdParam> userStatsIdParam) {
-        userStatsService.delete(userStatsIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        userStatsService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取用户统计信息详情")
     @SaCheckPermission("/user/stats/detail")
-    @GetMapping("/user/stats/detail")
-    public Result<?> detail(@ParameterObject @Valid UserStatsIdParam userStatsIdParam) {
-        return Result.success(userStatsService.detail(userStatsIdParam));
+    @GetMapping("/user/stats/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(userStatsService.detail(id));
     }
 
     @Operation(summary = "获取用户统计信息N最新")

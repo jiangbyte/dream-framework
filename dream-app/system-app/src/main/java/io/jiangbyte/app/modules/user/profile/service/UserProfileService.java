@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.user.profile.entity.UserProfile;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileAddParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfileEditParam;
-import io.jiangbyte.app.modules.user.profile.param.UserProfileIdParam;
 import io.jiangbyte.app.modules.user.profile.param.UserProfilePageParam;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 * @description 用户档案详情表 服务类
 */
 public interface UserProfileService extends IService<UserProfile> {
-    Page<UserProfile> page(UserProfilePageParam userProfilePageParam);
+    Page<UserProfile> page(UserProfilePageParam req);
 
-    void add(UserProfileAddParam userProfileAddParam);
+    void add(UserProfileAddParam req);
 
-    void edit(UserProfileEditParam userProfileEditParam);
+    void edit(UserProfileEditParam req);
 
-    void delete(List<UserProfileIdParam> userProfileIdParamList);
+    void delete(List<String> ids);
 
-    UserProfile detail(UserProfileIdParam userProfileIdParam);
+    UserProfile detail(String id);
 
     List<UserProfile> latest(int n);
 

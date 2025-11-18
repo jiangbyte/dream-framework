@@ -1,11 +1,11 @@
 package io.jiangbyte.app.modules.system.menu.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.stp.StpUtil;
 import io.jiangbyte.framework.result.Result;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuPageParam;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuAddParam;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuEditParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuIdParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,39 +39,39 @@ public class SysMenuController {
     @Operation(summary = "获取菜单分页")
     @SaCheckPermission("/sys/menu/page")
     @GetMapping("/sys/menu/page")
-    public Result<?> page(@ParameterObject SysMenuPageParam sysMenuPageParam) {
-        return Result.success(sysMenuService.page(sysMenuPageParam));
+    public Result<?> page(@ParameterObject SysMenuPageParam req) {
+        return Result.success(sysMenuService.page(req));
     }
 
     @Operation(summary = "添加菜单")
     @SaCheckPermission("/sys/menu/add")
     @PostMapping("/sys/menu/add")
-    public Result<?> add(@RequestBody @Valid SysMenuAddParam sysMenuAddParam) {
-        sysMenuService.add(sysMenuAddParam);
+    public Result<?> add(@RequestBody @Valid SysMenuAddParam req) {
+        sysMenuService.add(req);
         return Result.success();
     }
 
     @Operation(summary = "编辑菜单")
     @SaCheckPermission("/sys/menu/edit")
     @PostMapping("/sys/menu/edit")
-    public Result<?> edit(@RequestBody @Valid SysMenuEditParam sysMenuEditParam) {
-        sysMenuService.edit(sysMenuEditParam);
+    public Result<?> edit(@RequestBody @Valid SysMenuEditParam req) {
+        sysMenuService.edit(req);
         return Result.success();
     }
 
     @Operation(summary = "删除菜单")
     @SaCheckPermission("/sys/menu/delete")
     @PostMapping("/sys/menu/delete")
-    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<SysMenuIdParam> sysMenuIdParam) {
-        sysMenuService.delete(sysMenuIdParam);
+    public Result<?> delete(@RequestBody @Valid @NotEmpty(message = "集合不能为空") List<String> ids) {
+        sysMenuService.delete(ids);
         return Result.success();
     }
 
     @Operation(summary = "获取菜单详情")
     @SaCheckPermission("/sys/menu/detail")
-    @GetMapping("/sys/menu/detail")
-    public Result<?> detail(@ParameterObject @Valid SysMenuIdParam sysMenuIdParam) {
-        return Result.success(sysMenuService.detail(sysMenuIdParam));
+    @GetMapping("/sys/menu/detail/{id}")
+    public Result<?> detail(@PathVariable("id") String id) {
+        return Result.success(sysMenuService.detail(id));
     }
 
     @Operation(summary = "获取菜单N最新")
@@ -85,6 +85,22 @@ public class SysMenuController {
     @GetMapping("/sys/menu/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {
         return Result.success(sysMenuService.topN(n));
+    }
+
+    @Operation(summary = "获取当前用户菜单")
+    @SaCheckPermission("/sys/menu/list/tree")
+    @GetMapping("/sys/menu/list/tree")
+    public Result<?> getSysMenuListTreeWithAccountID() {
+        String accountId = StpUtil.getLoginIdAsString();
+        return Result.success(sysMenuService.getSysMenuListTreeWithAccountID(accountId));
+    }
+
+    @Operation(summary = "获取当前用户菜单")
+    @SaCheckPermission("/sys/menu/list")
+    @GetMapping("/sys/menu/list")
+    public Result<?> getSysMenuListWithAccountID() {
+        String accountId = StpUtil.getLoginIdAsString();
+        return Result.success(sysMenuService.getSysMenuListWithAccountID(accountId));
     }
 
 }
