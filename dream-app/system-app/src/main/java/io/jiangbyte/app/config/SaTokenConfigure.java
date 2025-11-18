@@ -2,9 +2,11 @@ package io.jiangbyte.app.config;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.filter.SaServletFilter;
+import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.same.SaSameUtil;
+import cn.dev33.satoken.stp.StpLogic;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import io.jiangbyte.app.config.properties.SecurityProperties;
@@ -17,23 +19,28 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Sa-Token 权限认证 配置类 
+ * Sa-Token 权限认证 配置类
  */
 @Slf4j
 @Configuration
 public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册 Sa-Token 全局过滤器 
+    @Bean
+    public StpLogic getStpLogicJwt() {
+        return new StpLogicJwtForSimple();
+    }
+
+    // 注册 Sa-Token 全局过滤器
     @Bean
     public SaServletFilter getSaServletFilter(SecurityProperties properties) {
         return new SaServletFilter()
                 .addInclude("/**")
-                .setAuth(obj -> {
-                            SaRouter.match("/**")
-                                    .notMatch(properties.getIgnore().getUrls())
-                                    .check(r -> StpUtil.checkLogin());
-                            log.info("请求 path={}  提交 token={}", SaHolder.getRequest().getRequestPath(), StpUtil.getTokenValue());
-                        }
-                )
+//                .setAuth(obj -> {
+//                            SaRouter.match("/**")
+//                                    .notMatch(properties.getIgnore().getUrls())
+//                                    .check(r -> StpUtil.checkLogin());
+//                            log.info("请求 path={}  提交 token={}", SaHolder.getRequest().getRequestPath(), StpUtil.getTokenValue());
+//                        }
+//                )
                 // 前置函数：在每次认证函数之前执行
                 .setBeforeAuth(obj -> {
                     SaHolder.getResponse()

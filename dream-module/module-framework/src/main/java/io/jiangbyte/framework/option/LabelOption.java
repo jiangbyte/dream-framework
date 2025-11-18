@@ -18,18 +18,18 @@ public class LabelOption<T> implements Serializable {
 
     private T value;
 
-    private String label;
+    private String text;
 
     private List<LabelOption<T>> children;
 
-    public LabelOption(T value, String label) {
+    public LabelOption(T value, String text) {
         this.value = value;
-        this.label = label;
+        this.text = text;
     }
 
-    public LabelOption(T value, String label, List<LabelOption<T>> children) {
+    public LabelOption(T value, String text, List<LabelOption<T>> children) {
         this.value = value;
-        this.label = label;
+        this.text = text;
         this.children = children;
     }
 }

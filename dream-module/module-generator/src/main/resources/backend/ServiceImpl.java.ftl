@@ -18,7 +18,7 @@ import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
-import io.jiangbyte.framework.pojo.CommonPageRequest;
+import io.jiangbyte.framework.pojo.BasePageRequest;
 import io.jiangbyte.framework.result.ResultCode;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -65,10 +65,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             queryWrapper.lambda().orderByAsc(${entity}::getSort);
         }</#if></#list>
 
-        return this.page(CommonPageRequest.Page(
+        return this.page(BasePageRequest.Page(
                         Optional.ofNullable(${table.entityPath}PageParam.getCurrent()).orElse(1),
-                        Optional.ofNullable(${table.entityPath}PageParam.getSize()).orElse(10),
-                null
+                        Optional.ofNullable(${table.entityPath}PageParam.getSize()).orElse(10)
                 ),
                 queryWrapper);
     }

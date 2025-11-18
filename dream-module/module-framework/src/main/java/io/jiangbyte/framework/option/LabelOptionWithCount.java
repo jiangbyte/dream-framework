@@ -18,32 +18,32 @@ public class LabelOptionWithCount<T> implements Serializable {
 
     private T value;
 
-    private String label;
+    private String text;
 
     private Integer count;
 
     private List<LabelOptionWithCount<T>> children;
 
-    public LabelOptionWithCount(T value, String label) {
+    public LabelOptionWithCount(T value, String text) {
         this.value = value;
-        this.label = label;
+        this.text = text;
     }
 
-    public LabelOptionWithCount(T value, String label, Integer count) {
+    public LabelOptionWithCount(T value, String text, Integer count) {
         this.value = value;
-        this.label = label;
+        this.text = text;
         this.count = count;
     }
 
-    public LabelOptionWithCount(T value, String label, List<LabelOptionWithCount<T>> children) {
+    public LabelOptionWithCount(T value, String text, List<LabelOptionWithCount<T>> children) {
         this.value = value;
-        this.label = label;
+        this.text = text;
         this.children = children;
     }
 
-    public LabelOptionWithCount(T value, String label, Integer count, List<LabelOptionWithCount<T>> children) {
+    public LabelOptionWithCount(T value, String text, Integer count, List<LabelOptionWithCount<T>> children) {
         this.value = value;
-        this.label = label;
+        this.text = text;
         this.count = count;
         this.children = children;
     }

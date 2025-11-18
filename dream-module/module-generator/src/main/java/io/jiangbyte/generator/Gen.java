@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
-import io.jiangbyte.framework.pojo.CommonEntity;
+import io.jiangbyte.framework.pojo.BaseEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @description TODO
  */
 public class Gen {
-   public static void execute(List<Module> modules, String dataBaseUrl, String dataBaseUserName, String dataBasePassword, String author, String outputDir) {
+    public static void execute(List<Module> modules, String dataBaseUrl, String dataBaseUserName, String dataBasePassword, String author, String outputDir) {
 
         DataSourceConfig.Builder datasourceBuilder = new DataSourceConfig.Builder(dataBaseUrl, dataBaseUserName, dataBasePassword);
 
@@ -55,8 +55,8 @@ public class Gen {
                                      */
                                     .entityBuilder()
 //                                .enableFileOverride() // 覆盖已生成文件
-                                    .superClass(CommonEntity.class) // 父类
-//                                    .addSuperEntityColumns("create_time", "create_user", "update_time", "update_user", "deleted")
+                                    .superClass(BaseEntity.class) // 父类
+                                    .addSuperEntityColumns("update_user", "updated_at", "create_user", "created_at", "delete_user", "deleted_at", "is_deleted")
                                     .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data")) // 开启 lombok
                                     .naming(NamingStrategy.underline_to_camel) // 数据库表映射到实体的命名策略
                                     .formatFileName("%s")

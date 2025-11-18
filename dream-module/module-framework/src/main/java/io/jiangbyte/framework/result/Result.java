@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class Result<T> implements Serializable {
 
-    private String code;
+    private Integer code;
 
     private T data;
 
@@ -55,7 +55,7 @@ public class Result<T> implements Serializable {
         }
     }
 
-    private static <T> Result<T> result(String code, T data, String message, Boolean success) {
+    private static <T> Result<T> result(Integer code, T data, String message, Boolean success) {
         Result<T> result = new Result<>();
         result.setCode(code);
         result.setData(data);

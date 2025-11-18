@@ -38,7 +38,6 @@ public class GlobalExceptionHandler {
         return Result.failure(e.getMessage());
     }
 
-
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
     public <T> Result<T> processException(NoHandlerFoundException e) {

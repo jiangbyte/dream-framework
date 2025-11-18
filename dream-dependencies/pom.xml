@@ -23,6 +23,7 @@
 
         <!-- 数据库 -->
         <mysql.version>9.1.0</mysql.version>
+        <pgsql.version>42.7.5</pgsql.version>
         <redisson.version>3.41.0</redisson.version>
         <druid.version>1.2.23</druid.version>
         <mybatis-plus.version>3.5.10</mybatis-plus.version>
@@ -122,6 +123,11 @@
                 <version>${mysql.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${pgsql.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
@@ -185,6 +191,11 @@
             <dependency>
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-alone-redis</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-jwt</artifactId>
                 <version>${sa-token.version}</version>
             </dependency>
 

@@ -7,7 +7,7 @@ package io.jiangbyte.framework.result;
  * @description 结果码接口
  */
 public interface IResultCode {
-    String getCode();
+    Integer getCode();
 
     String getMessage();
 }
