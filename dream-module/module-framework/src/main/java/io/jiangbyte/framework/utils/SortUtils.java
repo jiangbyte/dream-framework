@@ -151,15 +151,22 @@ public class SortUtils {
      * 应用默认排序（支持多数据库）
      */
     private static <T> void applyDefaultSort(Class<T> entityClass, QueryWrapper<T> queryWrapper) {
-        // 优先按sort字段排序
-        if (hasField(entityClass, "sort")) {
+        boolean hasSortField = hasField(entityClass, "sort");
+        boolean hasIdField = hasField(entityClass, "id");
+
+        if (hasSortField && hasIdField) {
+            // 同时有sort和id字段，合并排序
+            String sortSql = "sort ASC, " + buildNumericSortSql("id", true);
+            queryWrapper.last("ORDER BY " + sortSql);
+        } else if (hasSortField) {
+            // 只有sort字段
             queryWrapper.orderByAsc("sort");
-        }
-        // 其次按id数值排序
-        if (hasField(entityClass, "id")) {
+        } else if (hasIdField) {
+            // 只有id字段
             String idSortSql = buildNumericSortSql("id", true);
             queryWrapper.last("ORDER BY " + idSortSql);
         }
+        // 如果都没有，就不排序
     }
 
     /**

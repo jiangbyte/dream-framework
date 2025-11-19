@@ -54,7 +54,7 @@ defineExpose({
       <t-loading size="small" :loading="isLoading" show-overlay class="w-full">
         <t-descriptions :column="1" colon table-layout="auto">
           <#list table.fields as field>
-        <#if !["isDeleted", "deletedAt", "deleteUser", "createdAt", "createUser", "updatedAt", "updateUser"]?seq_contains(field.propertyName)>
+        <#if !["isDeleted","id", "deletedAt", "deleteUser", "createdAt", "createUser", "updatedAt", "updateUser"]?seq_contains(field.propertyName)>
           <t-descriptions-item label="${field.comment}">
               {{ formData.${field.propertyName} }}
           </t-descriptions-item>
