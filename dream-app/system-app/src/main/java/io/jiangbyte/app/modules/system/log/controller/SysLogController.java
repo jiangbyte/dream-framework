@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统活动日志记录表 控制器
 */
 @Tag(name = "系统活动日志记录表控制器")
@@ -79,7 +79,7 @@ public class SysLogController {
         return Result.success(sysLogService.latest(n));
     }
 
-    @Operation(summary = "获取系统活动日志记录Top N")
+    @Operation(summary = "获取系统活动日志记录TopN")
     @SaCheckPermission("/sys/log/top")
     @GetMapping("/sys/log/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

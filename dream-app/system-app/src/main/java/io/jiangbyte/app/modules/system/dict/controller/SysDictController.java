@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统字典表 控制器
 */
 @Tag(name = "系统字典表控制器")
@@ -79,7 +79,7 @@ public class SysDictController {
         return Result.success(sysDictService.latest(n));
     }
 
-    @Operation(summary = "获取系统字典Top N")
+    @Operation(summary = "获取系统字典TopN")
     @SaCheckPermission("/sys/dict/top")
     @GetMapping("/sys/dict/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

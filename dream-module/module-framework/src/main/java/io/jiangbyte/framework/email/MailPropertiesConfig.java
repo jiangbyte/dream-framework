@@ -1,4 +1,4 @@
-package io.jiangbyte.app;
+package io.jiangbyte.framework.email;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

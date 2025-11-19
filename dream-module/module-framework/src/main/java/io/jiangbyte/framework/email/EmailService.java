@@ -1,4 +1,4 @@
-package io.jiangbyte.app;
+package io.jiangbyte.framework.email;
 
 /**
  * @author ZhangJiangHu

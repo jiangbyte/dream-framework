@@ -1,4 +1,4 @@
-package io.jiangbyte.app;
+package io.jiangbyte.framework.enums;
 
 public enum SortType {
     DEFAULT,        // 默认排序

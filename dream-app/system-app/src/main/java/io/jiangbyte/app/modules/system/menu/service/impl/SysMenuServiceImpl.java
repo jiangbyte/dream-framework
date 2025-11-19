@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.system.menu.param.SysMenuEditParam;
 import io.jiangbyte.app.modules.system.menu.param.SysMenuPageParam;
 import io.jiangbyte.app.modules.system.menu.mapper.SysMenuMapper;
 import io.jiangbyte.app.modules.system.menu.service.SysMenuService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -47,15 +48,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(SysMenu::getTitle, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        } else {
-            queryWrapper.lambda().orderByAsc(SysMenu::getSort);
-        }
-
+        SortUtils.handleSort(SysMenu.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

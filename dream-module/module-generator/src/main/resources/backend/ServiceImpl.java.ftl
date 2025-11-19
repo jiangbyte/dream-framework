@@ -15,6 +15,7 @@ import ${package.EditParam}.${entity}EditParam;
 import ${package.PageParam}.${entity}PageParam;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${entity}Service;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -53,15 +54,7 @@ public class ${entity}ServiceImpl extends ${superServiceImplClass}<${table.mappe
     </#if>
 </#list>
 <#------------  END 字段循环遍历  ---------->
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }<#list table.fields as field><#if ["sort"]?seq_contains(field.propertyName)> else {
-            queryWrapper.lambda().orderByAsc(${entity}::getSort);
-        }</#if></#list>
-
+        SortUtils.handleSort(${entity}.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

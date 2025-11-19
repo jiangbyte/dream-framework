@@ -1,4 +1,6 @@
-package io.jiangbyte.app;
+package io.jiangbyte.framework.utils;
+
+import io.jiangbyte.framework.enums.SortType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

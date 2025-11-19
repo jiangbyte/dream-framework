@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 角色菜单关联表 控制器
 */
 @Tag(name = "角色菜单关联表控制器")
@@ -79,7 +79,7 @@ public class AuthRoleMenuController {
         return Result.success(authRoleMenuService.latest(n));
     }
 
-    @Operation(summary = "获取角色菜单关联Top N")
+    @Operation(summary = "获取角色菜单关联TopN")
     @SaCheckPermission("/auth/role/menu/top")
     @GetMapping("/auth/role/menu/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

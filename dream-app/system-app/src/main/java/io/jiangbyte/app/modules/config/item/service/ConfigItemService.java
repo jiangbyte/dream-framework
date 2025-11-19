@@ -12,7 +12,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统配置表 服务类
 */
 public interface ConfigItemService extends IService<ConfigItem> {

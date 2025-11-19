@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
 import io.jiangbyte.app.modules.config.item.mapper.ConfigItemMapper;
 import io.jiangbyte.app.modules.config.item.service.ConfigItemService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -43,15 +44,7 @@ public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigI
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(ConfigItem::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        } else {
-            queryWrapper.lambda().orderByAsc(ConfigItem::getSort);
-        }
-
+        SortUtils.handleSort(ConfigItem.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

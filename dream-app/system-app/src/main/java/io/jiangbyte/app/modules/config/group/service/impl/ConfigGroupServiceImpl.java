@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.config.group.param.ConfigGroupEditParam;
 import io.jiangbyte.app.modules.config.group.param.ConfigGroupPageParam;
 import io.jiangbyte.app.modules.config.group.mapper.ConfigGroupMapper;
 import io.jiangbyte.app.modules.config.group.service.ConfigGroupService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -43,15 +44,7 @@ public class ConfigGroupServiceImpl extends ServiceImpl<ConfigGroupMapper, Confi
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(ConfigGroup::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        } else {
-            queryWrapper.lambda().orderByAsc(ConfigGroup::getSort);
-        }
-
+        SortUtils.handleSort(ConfigGroup.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

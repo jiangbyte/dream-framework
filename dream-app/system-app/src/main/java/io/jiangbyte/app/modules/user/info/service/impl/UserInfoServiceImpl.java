@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.user.info.param.UserInfoEditParam;
 import io.jiangbyte.app.modules.user.info.param.UserInfoPageParam;
 import io.jiangbyte.app.modules.user.info.mapper.UserInfoMapper;
 import io.jiangbyte.app.modules.user.info.service.UserInfoService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -40,13 +41,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public Page<UserInfo> page(UserInfoPageParam req) {
         QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<UserInfo>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }
-
+        SortUtils.handleSort(UserInfo.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

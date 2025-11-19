@@ -55,10 +55,10 @@ VALUES ('1', '0', 'dashboard', '/dashboard', '/dashboard/index.vue', '仪表盘'
 
 -- 插入默认角色数据
 INSERT INTO auth_role (id, name, code, data_scope, description, created_at, updated_at)
-VALUES ('1', '超级管理员', 'super_admin', 'all', '系统超级管理员，拥有所有权限', NOW(), NOW()),
-       ('2', '系统管理员', 'admin', 'group_and_child', '系统管理员，拥有大部分管理权限', NOW(), NOW()),
-       ('3', '部门管理员', 'group_admin', 'group', '部门管理员，管理本部门用户和权限', NOW(), NOW()),
-       ('4', '普通用户', 'user', 'self', '普通用户，只能查看和操作自己的数据', NOW(), NOW());
+VALUES ('1', '超级管理员', 'SUPER_ADMIN', 'ALL', '系统超级管理员，拥有所有权限', NOW(), NOW()),
+       ('2', '系统管理员', 'ADMIN', 'GROUP_AND_CHILD', '系统管理员，拥有大部分管理权限', NOW(), NOW()),
+       ('3', '部门管理员', 'GROUP_ADMIN', 'GROUP', '部门管理员，管理本部门用户和权限', NOW(), NOW()),
+       ('4', '普通用户', 'USER', 'SELF', '普通用户，只能查看和操作自己的数据', NOW(), NOW());
 
 -- 插入角色菜单关联
 INSERT INTO auth_role_menu (id, role_id, menu_id)

@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 用户偏好设置表 控制器
 */
 @Tag(name = "用户偏好设置表控制器")
@@ -79,7 +79,7 @@ public class UserPreferenceController {
         return Result.success(userPreferenceService.latest(n));
     }
 
-    @Operation(summary = "获取用户偏好设置Top N")
+    @Operation(summary = "获取用户偏好设置TopN")
     @SaCheckPermission("/user/preference/top")
     @GetMapping("/user/preference/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

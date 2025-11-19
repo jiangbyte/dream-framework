@@ -12,7 +12,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 核心账户表 服务类
 */
 public interface AuthAccountService extends IService<AuthAccount> {

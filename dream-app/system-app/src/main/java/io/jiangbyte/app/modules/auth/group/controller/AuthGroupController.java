@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 用户组表 控制器
 */
 @Tag(name = "用户组表控制器")
@@ -79,7 +79,7 @@ public class AuthGroupController {
         return Result.success(authGroupService.latest(n));
     }
 
-    @Operation(summary = "获取用户组Top N")
+    @Operation(summary = "获取用户组TopN")
     @SaCheckPermission("/auth/group/top")
     @GetMapping("/auth/group/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

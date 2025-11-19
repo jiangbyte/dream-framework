@@ -3,6 +3,7 @@ package io.jiangbyte.app.modules.user.preference.param;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.jiangbyte.framework.pojo.BaseEntity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serial;
@@ -10,7 +11,7 @@ import java.io.Serial;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 用户偏好设置 分页参数
 */
 @Data

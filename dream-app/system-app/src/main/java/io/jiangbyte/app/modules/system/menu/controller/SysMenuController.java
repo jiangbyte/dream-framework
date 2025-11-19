@@ -24,7 +24,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 菜单表 控制器
 */
 @Tag(name = "菜单表控制器")
@@ -80,7 +80,7 @@ public class SysMenuController {
         return Result.success(sysMenuService.latest(n));
     }
 
-    @Operation(summary = "获取菜单Top N")
+    @Operation(summary = "获取菜单TopN")
     @SaCheckPermission("/sys/menu/top")
     @GetMapping("/sys/menu/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

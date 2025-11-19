@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 用户档案详情表 控制器
 */
 @Tag(name = "用户档案详情表控制器")
@@ -79,7 +79,7 @@ public class UserProfileController {
         return Result.success(userProfileService.latest(n));
     }
 
-    @Operation(summary = "获取用户档案详情Top N")
+    @Operation(summary = "获取用户档案详情TopN")
     @SaCheckPermission("/user/profile/top")
     @GetMapping("/user/profile/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

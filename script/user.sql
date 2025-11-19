@@ -7,12 +7,6 @@ CREATE TABLE user_info
 (
     -- 基础字段
     id          VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at  TIMESTAMP,               -- 软删除时间
-    delete_user VARCHAR(32),             -- 删除操作人
-    created_at  TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user VARCHAR(32),             -- 创建人
-    updated_at  TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user VARCHAR(32),             -- 更新人
     -- 业务字段
     account_id  VARCHAR(32)  NOT NULL,   -- 账户ID
     nickname    VARCHAR(128) NOT NULL,   -- 昵称
@@ -26,6 +20,15 @@ CREATE TABLE user_info
     github      VARCHAR(100),            -- GitHub
     gitee       VARCHAR(100),            -- GitTee
     blog        VARCHAR(255)             -- 博客
+    -- 基础字段
+    ,
+    is_deleted  BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at  TIMESTAMP,               -- 软删除时间
+    delete_user VARCHAR(32),             -- 删除操作人
+    created_at  TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user VARCHAR(32),             -- 创建人
+    updated_at  TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user VARCHAR(32)              -- 更新人
 );
 
 COMMENT ON TABLE user_info IS '用户基本信息表';
@@ -63,12 +66,6 @@ CREATE TABLE user_profile
 (
     -- 基础字段
     id            VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at    TIMESTAMP,               -- 软删除时间
-    delete_user   VARCHAR(32),             -- 删除操作人
-    created_at    TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user   VARCHAR(32),             -- 创建人
-    updated_at    TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user   VARCHAR(32),             -- 更新人
     -- 业务字段
     account_id    VARCHAR(32) NOT NULL,    -- 账户ID
     -- 教育职业信息
@@ -90,6 +87,15 @@ CREATE TABLE user_profile
     -- 隐私设置
     show_birthday BOOLEAN   DEFAULT FALSE, -- 是否显示生日
     show_location BOOLEAN   DEFAULT TRUE   -- 是否显示地理位置
+    -- 基础字段
+    ,
+    is_deleted    BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at    TIMESTAMP,               -- 软删除时间
+    delete_user   VARCHAR(32),             -- 删除操作人
+    created_at    TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user   VARCHAR(32),             -- 创建人
+    updated_at    TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user   VARCHAR(32)              -- 更新人
 );
 
 COMMENT ON TABLE user_profile IS '用户档案详情表';
@@ -130,12 +136,6 @@ CREATE TABLE user_preference
 (
     -- 基础字段
     id                   VARCHAR(32) PRIMARY KEY,     -- 主键ID
-    deleted_at           TIMESTAMP,                   -- 软删除时间
-    delete_user          VARCHAR(32),                 -- 删除操作人
-    created_at           TIMESTAMP   DEFAULT NOW(),   -- 创建时间
-    create_user          VARCHAR(32),                 -- 创建人
-    updated_at           TIMESTAMP   DEFAULT NOW(),   -- 更新时间
-    update_user          VARCHAR(32),                 -- 更新人
     -- 业务字段
     account_id           VARCHAR(32) NOT NULL,        -- 账户ID
     -- 界面设置
@@ -146,6 +146,15 @@ CREATE TABLE user_preference
     push_notifications   BOOLEAN     DEFAULT TRUE,    -- 推送通知
     -- 隐私与展示
     allow_direct_message BOOLEAN     DEFAULT TRUE     -- 允许私信
+    -- 基础字段
+    ,
+    is_deleted           BOOLEAN     DEFAULT FALSE,   -- 是否删除
+    deleted_at           TIMESTAMP,                   -- 软删除时间
+    delete_user          VARCHAR(32),                 -- 删除操作人
+    created_at           TIMESTAMP   DEFAULT NOW(),   -- 创建时间
+    create_user          VARCHAR(32),                 -- 创建人
+    updated_at           TIMESTAMP   DEFAULT NOW(),   -- 更新时间
+    update_user          VARCHAR(32)                  -- 更新人
 );
 
 COMMENT ON TABLE user_preference IS '用户偏好设置表';
@@ -176,12 +185,6 @@ CREATE TABLE user_stats
 (
     -- 基础字段
     id                    VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at            TIMESTAMP,               -- 软删除时间
-    delete_user           VARCHAR(32),             -- 删除操作人
-    created_at            TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user           VARCHAR(32),             -- 创建人
-    updated_at            TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user           VARCHAR(32),             -- 更新人
     -- 业务字段
     account_id            VARCHAR(32) NOT NULL,    -- 账户ID
     -- 等级与经验
@@ -197,6 +200,15 @@ CREATE TABLE user_stats
     like_count            BIGINT    DEFAULT 0,     -- 获赞数
     follow_count          BIGINT    DEFAULT 0,     -- 关注数
     fans_count            BIGINT    DEFAULT 0      -- 粉丝数
+    -- 基础字段
+    ,
+    is_deleted            BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at            TIMESTAMP,               -- 软删除时间
+    delete_user           VARCHAR(32),             -- 删除操作人
+    created_at            TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user           VARCHAR(32),             -- 创建人
+    updated_at            TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user           VARCHAR(32)              -- 更新人
 );
 
 COMMENT ON TABLE user_stats IS '用户统计信息表';

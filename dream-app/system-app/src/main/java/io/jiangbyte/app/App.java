@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableScheduling
 @EnableAsync
 @EnableCaching  // 开启缓存
-//@EnableDubbo
-public class SystemApplication {
+public class App {
     public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(SystemApplication.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(App.class, args);
         Environment env = run.getEnvironment();
 
         String port = env.getProperty("server.port");

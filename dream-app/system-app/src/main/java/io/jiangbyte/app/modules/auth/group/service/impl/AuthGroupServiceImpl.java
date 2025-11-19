@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.auth.group.param.AuthGroupEditParam;
 import io.jiangbyte.app.modules.auth.group.param.AuthGroupPageParam;
 import io.jiangbyte.app.modules.auth.group.mapper.AuthGroupMapper;
 import io.jiangbyte.app.modules.auth.group.service.AuthGroupService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -43,15 +44,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(AuthGroup::getName, req.getKeyword());
         }
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        } else {
-            queryWrapper.lambda().orderByAsc(AuthGroup::getSort);
-        }
-
+        SortUtils.handleSort(AuthGroup.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

@@ -6,19 +6,21 @@ DROP TABLE IF EXISTS sys_dict;
 CREATE TABLE sys_dict
 (
     -- 基础字段
-    id          VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at  TIMESTAMP,               -- 软删除时间
-    delete_user VARCHAR(32),             -- 删除操作人
-    created_at  TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user VARCHAR(32),             -- 创建人
-    updated_at  TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user VARCHAR(32),             -- 更新人
+    id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
     dict_type   VARCHAR(64)  NOT NULL,   -- 字典类型
     type_label  VARCHAR(64),             -- 类型标签
     dict_value  VARCHAR(255) NOT NULL,   -- 字典值
     dict_label  VARCHAR(255),            -- 字典标签
     sort        INTEGER   DEFAULT 0      -- 排序号
+    -- 基础字段
+    ,is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE sys_dict IS '系统字典表';
@@ -47,13 +49,7 @@ DROP TABLE IF EXISTS sys_log;
 CREATE TABLE sys_log
 (
     -- 基础字段
-    id             VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at     TIMESTAMP,               -- 软删除时间
-    delete_user    VARCHAR(32),             -- 删除操作人
-    created_at     TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user    VARCHAR(32),             -- 创建人
-    updated_at     TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user    VARCHAR(32),             -- 更新人
+    id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
     user_id        VARCHAR(32),             -- 用户ID
     operation      VARCHAR(255),            -- 操作类型
@@ -66,6 +62,14 @@ CREATE TABLE sys_log
     description    VARCHAR(255),            -- 操作描述
     status         VARCHAR(255),            -- 操作状态
     message        TEXT                     -- 日志消息
+    -- 基础字段
+    ,is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE sys_log IS '系统活动日志记录表';
@@ -102,13 +106,7 @@ DROP TABLE IF EXISTS sys_menu;
 CREATE TABLE sys_menu
 (
     -- 基础字段
-    id             VARCHAR(32) PRIMARY KEY,   -- 主键ID
-    deleted_at     TIMESTAMP,                 -- 软删除时间
-    delete_user    VARCHAR(32),               -- 删除操作人
-    created_at     TIMESTAMP   DEFAULT NOW(), -- 创建时间
-    create_user    VARCHAR(32),               -- 创建人
-    updated_at     TIMESTAMP   DEFAULT NOW(), -- 更新时间
-    update_user    VARCHAR(32),               -- 更新人
+    id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
     pid            VARCHAR(32) DEFAULT '0',   -- 父级ID
     name           VARCHAR(100),              -- 菜单名称
@@ -130,6 +128,14 @@ CREATE TABLE sys_menu
     without_tab    BOOLEAN     DEFAULT FALSE, -- 无标签页
     parameters     VARCHAR(500),              -- 头部参数
     extra_params   JSONB                      -- 路由参数
+    -- 基础字段
+    ,is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE sys_menu IS '菜单表';

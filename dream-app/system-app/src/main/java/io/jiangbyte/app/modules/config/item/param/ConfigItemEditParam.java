@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.jiangbyte.framework.pojo.BaseEntity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serial;
@@ -12,7 +13,7 @@ import java.util.Date;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统配置 编辑参数
 */
 @Data
@@ -24,6 +25,20 @@ public class ConfigItemEditParam implements Serializable {
 
     @Schema(description = "主键ID")
     private String id;
+
+    private Boolean isDeleted;
+
+    @Schema(description = "软删除时间")
+    private Date deletedAt;
+
+    @Schema(description = "删除操作人")
+    private String deleteUser;
+
+    @Schema(description = "创建时间")
+    private Date createdAt;
+
+    @Schema(description = "更新时间")
+    private Date updatedAt;
 
     @Schema(description = "分组ID")
     private String groupId;

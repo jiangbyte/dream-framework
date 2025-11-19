@@ -9,13 +9,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.jiangbyte.app.SortUtils;
 import io.jiangbyte.app.modules.auth.role.entity.AuthRole;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleAddParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleEditParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRolePageParam;
 import io.jiangbyte.app.modules.auth.role.mapper.AuthRoleMapper;
 import io.jiangbyte.app.modules.auth.role.service.AuthRoleService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -44,9 +44,7 @@ public class AuthRoleServiceImpl extends ServiceImpl<AuthRoleMapper, AuthRole> i
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(AuthRole::getName, req.getKeyword());
         }
-
         SortUtils.handleSort(AuthRole.class, queryWrapper, req.getSortField(), req.getSortOrder());
-
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

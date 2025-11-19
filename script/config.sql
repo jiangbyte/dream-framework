@@ -6,19 +6,21 @@ DROP TABLE IF EXISTS config_group;
 CREATE TABLE config_group
 (
     -- 基础字段
-    id          VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at  TIMESTAMP,               -- 软删除时间
-    delete_user VARCHAR(32),             -- 删除操作人
-    created_at  TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user VARCHAR(32),             -- 创建人
-    updated_at  TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user VARCHAR(32),             -- 更新人
+    id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
     name        VARCHAR(100) NOT NULL,   -- 分组名称
     code        VARCHAR(100) NOT NULL,   -- 分组代码
     description VARCHAR(500),            -- 分组描述
     sort        INTEGER   DEFAULT 0,     -- 排序
     is_system   BOOLEAN   DEFAULT FALSE  -- 是否系统分组
+    -- 基础字段
+    ,is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE config_group IS '配置分组表';
@@ -47,13 +49,7 @@ DROP TABLE IF EXISTS config_item;
 CREATE TABLE config_item
 (
     -- 基础字段
-    id             VARCHAR(32) PRIMARY KEY, -- 主键ID
-    deleted_at     TIMESTAMP,               -- 软删除时间
-    delete_user    VARCHAR(32),             -- 删除操作人
-    created_at     TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user    VARCHAR(32),             -- 创建人
-    updated_at     TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user    VARCHAR(32),             -- 更新人
+    id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
     group_id       VARCHAR(32)  NOT NULL,   -- 分组ID
     name           VARCHAR(255) NOT NULL,   -- 配置项名称
@@ -62,6 +58,14 @@ CREATE TABLE config_item
     component_type VARCHAR(255),            -- 组件类型
     description    VARCHAR(255),            -- 配置描述
     sort           INTEGER   DEFAULT 0      -- 排序
+    -- 基础字段
+    ,is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE config_item IS '系统配置表';

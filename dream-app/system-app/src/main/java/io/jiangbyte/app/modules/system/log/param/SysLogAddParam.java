@@ -13,7 +13,7 @@ import java.util.Date;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统活动日志记录 增加参数
 */
 @Data
@@ -22,6 +22,20 @@ public class SysLogAddParam implements Serializable {
     @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    private Boolean isDeleted;
+
+    @Schema(description = "软删除时间")
+    private Date deletedAt;
+
+    @Schema(description = "删除操作人")
+    private String deleteUser;
+
+    @Schema(description = "创建时间")
+    private Date createdAt;
+
+    @Schema(description = "更新时间")
+    private Date updatedAt;
 
     @Schema(description = "用户ID")
     private String userId;

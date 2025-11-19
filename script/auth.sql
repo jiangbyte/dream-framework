@@ -7,13 +7,6 @@ CREATE TABLE auth_account
 (
     -- 基础字段
     id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
-    is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
-    deleted_at           TIMESTAMP,               -- 软删除时间
-    delete_user          VARCHAR(32),             -- 删除操作人
-    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user          VARCHAR(32),             -- 创建人
-    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user          VARCHAR(32),             -- 更新人
     -- 业务字段
     username             VARCHAR(64)  NOT NULL,   -- 用户名，登录标识
     password             VARCHAR(100) NOT NULL,   -- 加密后的密码
@@ -25,7 +18,15 @@ CREATE TABLE auth_account
     last_password_change TIMESTAMP,               -- 最后修改密码的时间
     last_login_time      TIMESTAMP,               -- 最后登录时间
     last_login_ip        VARCHAR(64),             -- 最后登录IP地址
-    login_count          INTEGER   DEFAULT 0      -- 登录次数统计
+    login_count          INTEGER   DEFAULT 0,      -- 登录次数统计
+    -- 基础字段
+    is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE auth_account IS '核心账户表';
@@ -86,13 +87,6 @@ CREATE TABLE auth_group
 (
     -- 基础字段
     id             VARCHAR(32) PRIMARY KEY, -- 主键ID
-    is_deleted     BOOLEAN   DEFAULT FALSE, -- 是否删除
-    deleted_at     TIMESTAMP,               -- 软删除时间
-    delete_user    VARCHAR(32),             -- 删除操作人
-    created_at     TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user    VARCHAR(32),             -- 创建人
-    updated_at     TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user    VARCHAR(32),             -- 更新人
     -- 业务字段
     parent_id      VARCHAR(32),             -- 父级组ID
     name           VARCHAR(100),            -- 用户组名称
@@ -101,7 +95,15 @@ CREATE TABLE auth_group
     sort           SMALLINT  DEFAULT 99,    -- 排序号，数字越小越靠前
     admin_id       VARCHAR(32),             -- 管理员ID
     max_user_count INTEGER,                 -- 最大用户数量限制
-    is_system      BOOLEAN   DEFAULT FALSE  -- 是否为系统预设组
+    is_system      BOOLEAN   DEFAULT FALSE,  -- 是否为系统预设组
+    -- 基础字段
+    is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE auth_group IS '用户组表';
@@ -135,19 +137,20 @@ CREATE TABLE auth_role
 (
     -- 基础字段
     id               VARCHAR(32) PRIMARY KEY, -- 主键ID
-    is_deleted       BOOLEAN   DEFAULT FALSE, -- 是否删除
-    deleted_at       TIMESTAMP,               -- 软删除时间
-    delete_user      VARCHAR(32),             -- 删除操作人
-    created_at       TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user      VARCHAR(32),             -- 创建人
-    updated_at       TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user      VARCHAR(32),             -- 更新人
     -- 业务字段
     name             VARCHAR(255),            -- 角色名称
     code             VARCHAR(50),             -- 角色编码
     data_scope       VARCHAR(50),             -- 数据权限范围
     description      VARCHAR(255),            -- 角色描述
-    assign_group_ids JSONB                    -- 分配的用户组ID列表(JSON数组)
+    assign_group_ids JSONB,                    -- 分配的用户组ID列表(JSON数组)
+    -- 基础字段
+    is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE auth_role IS '角色表';
@@ -202,19 +205,20 @@ CREATE TABLE auth_password_reset
 (
     -- 基础字段
     id          VARCHAR(32) PRIMARY KEY, -- 主键ID
-    is_deleted  BOOLEAN   DEFAULT FALSE, -- 是否删除
-    deleted_at  TIMESTAMP,               -- 软删除时间
-    delete_user VARCHAR(32),             -- 删除操作人
-    created_at  TIMESTAMP DEFAULT NOW(), -- 创建时间
-    create_user VARCHAR(32),             -- 创建人
-    updated_at  TIMESTAMP DEFAULT NOW(), -- 更新时间
-    update_user VARCHAR(32),             -- 更新人
     -- 业务字段
     account_id  VARCHAR(32)  NOT NULL,   -- 账户ID
     token       VARCHAR(100) NOT NULL,   -- 重置令牌
     email       VARCHAR(255) NOT NULL,   -- 接收重置邮件的邮箱
     expires_at  TIMESTAMP    NOT NULL,   -- 令牌过期时间
-    used        BOOLEAN   DEFAULT FALSE  -- 是否已使用
+    used        BOOLEAN   DEFAULT FALSE,  -- 是否已使用
+    -- 基础字段
+    is_deleted           BOOLEAN   DEFAULT FALSE, -- 是否删除
+    deleted_at           TIMESTAMP,               -- 软删除时间
+    delete_user          VARCHAR(32),             -- 删除操作人
+    created_at           TIMESTAMP DEFAULT NOW(), -- 创建时间
+    create_user          VARCHAR(32),             -- 创建人
+    updated_at           TIMESTAMP DEFAULT NOW(), -- 更新时间
+    update_user          VARCHAR(32)             -- 更新人
 );
 
 COMMENT ON TABLE auth_password_reset IS '密码重置表';

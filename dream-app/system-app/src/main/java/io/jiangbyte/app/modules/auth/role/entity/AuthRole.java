@@ -1,61 +1,53 @@
 package io.jiangbyte.app.modules.auth.role.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.jiangbyte.app.SortConfig;
-import io.jiangbyte.app.SortType;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.jiangbyte.framework.pojo.BaseEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.io.Serial;
+import java.util.Date;
+import io.jiangbyte.framework.enums.SortType;
+import io.jiangbyte.framework.utils.SortConfig;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
- * <p>
- * 角色表
- * </p>
- *
- * @author Charlie Zhang
- * @since 2025-11-18
- */
+* @author Charlie Zhang
+* @version v1.0
+* @date 2025-11-19
+* @description 角色表
+*/
+@EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("auth_role")
+@TableName(value = "auth_role", autoResultMap = true)
 @Schema(name = "AuthRole", description = "角色表")
 public class AuthRole extends BaseEntity {
-
+    @Serial
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键ID
-     */
     @Schema(description = "主键ID")
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     @SortConfig(type = SortType.NUMERIC_STRING)
     private String id;
 
-    /**
-     * 角色名称
-     */
     @Schema(description = "角色名称")
     private String name;
 
-    /**
-     * 角色编码
-     */
     @Schema(description = "角色编码")
     private String code;
 
-    /**
-     * 数据权限范围
-     */
     @Schema(description = "数据权限范围")
     private String dataScope;
 
-    /**
-     * 角色描述
-     */
     @Schema(description = "角色描述")
     private String description;
 
-    /**
-     * 分配的用户组ID列表
-     */
     @Schema(description = "分配的用户组ID列表")
     private Object assignGroupIds;
 }

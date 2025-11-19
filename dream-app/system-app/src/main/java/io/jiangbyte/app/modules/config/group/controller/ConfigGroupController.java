@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 配置分组表 控制器
 */
 @Tag(name = "配置分组表控制器")
@@ -79,7 +79,7 @@ public class ConfigGroupController {
         return Result.success(configGroupService.latest(n));
     }
 
-    @Operation(summary = "获取配置分组Top N")
+    @Operation(summary = "获取配置分组TopN")
     @SaCheckPermission("/config/group/top")
     @GetMapping("/config/group/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

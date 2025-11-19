@@ -11,7 +11,7 @@ import java.io.Serial;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统活动日志记录 分页参数
 */
 @Data

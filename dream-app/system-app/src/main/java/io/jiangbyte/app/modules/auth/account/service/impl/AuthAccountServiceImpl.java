@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.auth.account.param.AuthAccountEditParam;
 import io.jiangbyte.app.modules.auth.account.param.AuthAccountPageParam;
 import io.jiangbyte.app.modules.auth.account.mapper.AuthAccountMapper;
 import io.jiangbyte.app.modules.auth.account.service.AuthAccountService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -40,13 +41,7 @@ public class AuthAccountServiceImpl extends ServiceImpl<AuthAccountMapper, AuthA
     @Override
     public Page<AuthAccount> page(AuthAccountPageParam req) {
         QueryWrapper<AuthAccount> queryWrapper = new QueryWrapper<AuthAccount>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }
-
+        SortUtils.handleSort(AuthAccount.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

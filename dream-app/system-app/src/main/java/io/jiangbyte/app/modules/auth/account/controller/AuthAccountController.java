@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 核心账户表 控制器
 */
 @Tag(name = "核心账户表控制器")
@@ -79,7 +79,7 @@ public class AuthAccountController {
         return Result.success(authAccountService.latest(n));
     }
 
-    @Operation(summary = "获取核心账户Top N")
+    @Operation(summary = "获取核心账户TopN")
     @SaCheckPermission("/auth/account/top")
     @GetMapping("/auth/account/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

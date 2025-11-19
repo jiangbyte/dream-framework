@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 账户角色关联表 控制器
 */
 @Tag(name = "账户角色关联表控制器")
@@ -79,7 +79,7 @@ public class AuthAccountRoleController {
         return Result.success(authAccountRoleService.latest(n));
     }
 
-    @Operation(summary = "获取账户角色关联Top N")
+    @Operation(summary = "获取账户角色关联TopN")
     @SaCheckPermission("/auth/account/role/top")
     @GetMapping("/auth/account/role/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

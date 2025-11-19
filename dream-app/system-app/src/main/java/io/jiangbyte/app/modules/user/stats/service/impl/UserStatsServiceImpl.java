@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.user.stats.param.UserStatsEditParam;
 import io.jiangbyte.app.modules.user.stats.param.UserStatsPageParam;
 import io.jiangbyte.app.modules.user.stats.mapper.UserStatsMapper;
 import io.jiangbyte.app.modules.user.stats.service.UserStatsService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -40,13 +41,7 @@ public class UserStatsServiceImpl extends ServiceImpl<UserStatsMapper, UserStats
     @Override
     public Page<UserStats> page(UserStatsPageParam req) {
         QueryWrapper<UserStats> queryWrapper = new QueryWrapper<UserStats>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }
-
+        SortUtils.handleSort(UserStats.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

@@ -1,13 +1,16 @@
-package io.jiangbyte.app;
+package io.jiangbyte.framework.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.jiangbyte.framework.enums.SortType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 
+@Slf4j
 @Component
 public class SortUtils {
 
@@ -21,6 +24,7 @@ public class SortUtils {
         } catch (Exception e) {
             databaseType = "mysql"; // 默认使用MySQL
         }
+        log.info("Database type: {}", databaseType);
     }
 
     /**
@@ -72,13 +76,13 @@ public class SortUtils {
         String underlineField = StrUtil.toUnderlineCase(field);
 
         switch (config.type()) {
-            case NUMERIC_STRING:
+            case SortType.NUMERIC_STRING:
                 orderSql = buildNumericSortSql(underlineField, isAsc);
                 break;
-            case CHINESE_PINYIN:
+            case SortType.CHINESE_PINYIN:
                 orderSql = buildChineseSortSql(underlineField, isAsc);
                 break;
-            case CUSTOM:
+            case SortType.CUSTOM:
                 orderSql = config.customSql() + (isAsc ? " ASC" : " DESC");
                 break;
             default:

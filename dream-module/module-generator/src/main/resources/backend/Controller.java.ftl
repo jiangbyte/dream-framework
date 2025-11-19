@@ -83,7 +83,7 @@ public class ${entity}Controller {
         return Result.success(${table.entityPath}Service.latest(n));
     }
 
-    @Operation(summary = "获取${table.comment?replace('表', '')}Top N")
+    @Operation(summary = "获取${table.comment?replace('表', '')}TopN")
     @SaCheckPermission("/${table.name?replace('_', '/')}/top")
     @GetMapping("/${table.name?replace('_', '/')}/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuEditParam;
 import io.jiangbyte.app.modules.auth.role.param.AuthRoleMenuPageParam;
 import io.jiangbyte.app.modules.auth.role.mapper.AuthRoleMenuMapper;
 import io.jiangbyte.app.modules.auth.role.service.AuthRoleMenuService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -40,13 +41,7 @@ public class AuthRoleMenuServiceImpl extends ServiceImpl<AuthRoleMenuMapper, Aut
     @Override
     public Page<AuthRoleMenu> page(AuthRoleMenuPageParam req) {
         QueryWrapper<AuthRoleMenu> queryWrapper = new QueryWrapper<AuthRoleMenu>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }
-
+        SortUtils.handleSort(AuthRoleMenu.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

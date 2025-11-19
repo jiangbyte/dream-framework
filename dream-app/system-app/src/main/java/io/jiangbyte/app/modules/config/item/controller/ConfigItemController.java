@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 系统配置表 控制器
 */
 @Tag(name = "系统配置表控制器")
@@ -79,7 +79,7 @@ public class ConfigItemController {
         return Result.success(configItemService.latest(n));
     }
 
-    @Operation(summary = "获取系统配置Top N")
+    @Operation(summary = "获取系统配置TopN")
     @SaCheckPermission("/config/item/top")
     @GetMapping("/config/item/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

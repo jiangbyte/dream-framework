@@ -15,6 +15,7 @@ import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetEditParam;
 import io.jiangbyte.app.modules.auth.reset.param.AuthPasswordResetPageParam;
 import io.jiangbyte.app.modules.auth.reset.mapper.AuthPasswordResetMapper;
 import io.jiangbyte.app.modules.auth.reset.service.AuthPasswordResetService;
+import io.jiangbyte.framework.utils.SortUtils;
 import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
@@ -40,13 +41,7 @@ public class AuthPasswordResetServiceImpl extends ServiceImpl<AuthPasswordResetM
     @Override
     public Page<AuthPasswordReset> page(AuthPasswordResetPageParam req) {
         QueryWrapper<AuthPasswordReset> queryWrapper = new QueryWrapper<AuthPasswordReset>().checkSqlInjection();
-        if (ObjectUtil.isAllNotEmpty(req.getSortField(), req.getSortOrder()) && ISortOrderEnum.isValid(req.getSortOrder())) {
-            queryWrapper.orderBy(
-                    true,
-                    req.getSortOrder().equals(ISortOrderEnum.ASCEND.getValue()),
-                    StrUtil.toUnderlineCase(req.getSortField()));
-        }
-
+        SortUtils.handleSort(AuthPasswordReset.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
                         Optional.ofNullable(req.getCurrent()).orElse(1),
                         Optional.ofNullable(req.getPageSize()).orElse(10)),

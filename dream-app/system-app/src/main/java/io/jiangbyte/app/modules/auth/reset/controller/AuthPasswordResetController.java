@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 密码重置表 控制器
 */
 @Tag(name = "密码重置表控制器")
@@ -79,7 +79,7 @@ public class AuthPasswordResetController {
         return Result.success(authPasswordResetService.latest(n));
     }
 
-    @Operation(summary = "获取密码重置Top N")
+    @Operation(summary = "获取密码重置TopN")
     @SaCheckPermission("/auth/password/reset/top")
     @GetMapping("/auth/password/reset/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

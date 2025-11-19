@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 角色表 控制器
 */
 @Tag(name = "角色表控制器")
@@ -79,7 +79,7 @@ public class AuthRoleController {
         return Result.success(authRoleService.latest(n));
     }
 
-    @Operation(summary = "获取角色Top N")
+    @Operation(summary = "获取角色TopN")
     @SaCheckPermission("/auth/role/top")
     @GetMapping("/auth/role/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {

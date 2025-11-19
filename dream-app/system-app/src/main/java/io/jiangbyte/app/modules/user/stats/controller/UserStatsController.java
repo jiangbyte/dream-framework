@@ -23,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-18
+* @date 2025-11-19
 * @description 用户统计信息表 控制器
 */
 @Tag(name = "用户统计信息表控制器")
@@ -79,7 +79,7 @@ public class UserStatsController {
         return Result.success(userStatsService.latest(n));
     }
 
-    @Operation(summary = "获取用户统计信息Top N")
+    @Operation(summary = "获取用户统计信息TopN")
     @SaCheckPermission("/user/stats/top")
     @GetMapping("/user/stats/top")
     public Result<?> topN(@RequestParam(value = "n", required = false) Integer n) {
