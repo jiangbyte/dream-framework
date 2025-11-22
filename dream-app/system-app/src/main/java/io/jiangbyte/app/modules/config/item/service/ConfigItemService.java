@@ -3,6 +3,7 @@ package io.jiangbyte.app.modules.config.item.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.jiangbyte.app.modules.config.item.entity.ConfigItem;
+import io.jiangbyte.app.modules.config.item.entity.WebsiteConfigInfo;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
@@ -29,4 +30,6 @@ public interface ConfigItemService extends IService<ConfigItem> {
     List<ConfigItem> latest(int n);
 
     List<ConfigItem> topN(int n);
+
+    WebsiteConfigInfo websiteConfig();
 }

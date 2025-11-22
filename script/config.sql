@@ -51,7 +51,7 @@ CREATE TABLE config_item
     -- 基础字段
     id                   VARCHAR(32) PRIMARY KEY, -- 主键ID
     -- 业务字段
-    group_id       VARCHAR(32)  NOT NULL,   -- 分组ID
+    group_code       VARCHAR(32)  NOT NULL,   -- 分组编码
     name           VARCHAR(255) NOT NULL,   -- 配置项名称
     code           VARCHAR(255) NOT NULL,   -- 配置项代码
     value          VARCHAR(255) NOT NULL,   -- 配置值
@@ -76,7 +76,7 @@ COMMENT ON COLUMN config_item.created_at IS '创建时间';
 COMMENT ON COLUMN config_item.create_user IS '创建人';
 COMMENT ON COLUMN config_item.updated_at IS '更新时间';
 COMMENT ON COLUMN config_item.update_user IS '更新人';
-COMMENT ON COLUMN config_item.group_id IS '分组ID';
+COMMENT ON COLUMN config_item.group_code IS '分组Code';
 COMMENT ON COLUMN config_item.name IS '配置项名称';
 COMMENT ON COLUMN config_item.code IS '配置项代码';
 COMMENT ON COLUMN config_item.value IS '配置值';
@@ -85,5 +85,4 @@ COMMENT ON COLUMN config_item.description IS '配置描述';
 COMMENT ON COLUMN config_item.sort IS '排序';
 
 -- 创建系统配置表索引
-CREATE INDEX idx_config_item_group_id ON config_item (group_id); -- 分组ID索引
 CREATE UNIQUE INDEX idx_config_item_code ON config_item (code); -- 配置项代码唯一索引

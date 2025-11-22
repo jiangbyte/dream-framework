@@ -8,21 +8,26 @@ BEGIN;
 INSERT INTO config_group (id, name, code, description, sort, is_system, created_at, updated_at)
 VALUES ('1', '网站配置', 'WEBSITE', '网站基础信息配置', 1, TRUE, NOW(), NOW());
 
--- 插入所有配置项
-INSERT INTO config_item (id, group_id, name, code, value, component_type, description, sort, created_at, updated_at)
-VALUES ('1', '1', '网站名称', 'WEBSITE_NAME', 'Galaxy 内容管理系统', 'input', '网站的名称', 1, NOW(), NOW()),
-       ('2', '1', '网站Logo', 'WEBSITE_LOGO', '/static/images/logo.png', 'upload', '网站的Logo图片路径', 2, NOW(), NOW()),
-       ('3', '1', '网站描述', 'WEBSITE_DESC', '一个现代化的内容管理系统，基于 Go 语言开发', 'textarea', '网站的简要描述', 3, NOW(), NOW()),
-       ('4', '1', '网站关键字', 'WEBSITE_KEYWORDS', 'CMS,内容管理,Go,Golang,Galaxy', 'input', '网站SEO关键字，用逗号分隔', 4, NOW(), NOW()),
-       ('5', '1', '网站作者', 'WEBSITE_AUTHOR', 'Galaxy Team', 'input', '网站的作者或开发团队', 5, NOW(), NOW()),
-       ('6', '1', '网站图标', 'WEBSITE_ICON', '/static/images/favicon.ico', 'upload', '网站favicon图标路径', 6, NOW(), NOW()),
-       ('7', '1', '网站版本', 'WEBSITE_VERSION', '1.1.0', 'input', '网站的版本号', 7, NOW(), NOW()),
-       ('8', '1', '版权信息', 'COPYRIGHT', '© 2025 Galaxy CMS. All Rights Reserved.', 'input', '网站版权信息', 8, NOW(), NOW()),
-       ('9', '1', '备案号', 'RECORD_NUMBER', '京ICP备12345678号', 'input', '网站备案号', 9, NOW(), NOW()),
-       ('10', '1', '联系邮箱', 'CONTACT_EMAIL', 'contact@galaxy-cms.com', 'input', '网站联系邮箱', 10, NOW(), NOW()),
-       ('11', '1', '联系电话', 'CONTACT_PHONE', '+86 400-123-4567', 'input', '网站联系电话', 11, NOW(), NOW()),
-       ('12', '1', '公司地址', 'COMPANY_ADDRESS', '北京市朝阳区科技园区', 'textarea', '公司或办公地址', 12, NOW(), NOW()),
-       ('13', '1', '社交媒体链接', 'SOCIAL_LINKS', '[{"icon": "github", "title": "GitHub", "url": "https://github.com/galaxy-cms", "color": "#333333"}, {"icon": "wechat", "title": "微信公众号", "url": "https://mp.weixin.qq.com/your-account", "color": "#07c160"}]', 'json-editor', '社交媒体链接配置，JSON格式', 13, NOW(), NOW());
+-- 插入整理后的配置项（只保留代码中实际使用的字段）
+INSERT INTO config_item (id, group_code, name, code, value, component_type, description, sort, created_at, updated_at)
+VALUES
+    -- 网站信息
+    ('1', 'WEBSITE', '网站名称', 'WEBSITE_NAME', 'Galaxy 内容管理系统', 'input', '网站的名称', 1, NOW(), NOW()),
+    ('2', 'WEBSITE', '网站Logo', 'WEBSITE_LOGO', '/static/images/logo.png', 'upload', '网站的Logo图片路径', 2, NOW(), NOW()),
+    ('3', 'WEBSITE', '网站描述', 'WEBSITE_DESCRIPTION', '一个现代化的内容管理系统，基于 Go 语言开发', 'textarea', '网站的简要描述', 3, NOW(), NOW()),
+    ('4', 'WEBSITE', '网站关键字', 'WEBSITE_KEYWORDS', 'CMS,内容管理,Go,Golang,Galaxy', 'input', '网站SEO关键字，用逗号分隔', 4, NOW(), NOW()),
+    ('5', 'WEBSITE', '网站作者', 'WEBSITE_AUTHOR', 'Galaxy Team', 'input', '网站的作者或开发团队', 5, NOW(), NOW()),
+    ('6', 'WEBSITE', '版权信息', 'WEBSITE_COPYRIGHT', '© 2025 Galaxy CMS. All Rights Reserved.', 'input', '网站版权信息', 6, NOW(), NOW()),
+    ('7', 'WEBSITE', '网站版本', 'WEBSITE_VERSION', '1.1.0', 'input', '网站的版本号', 7, NOW(), NOW()),
+
+    -- 联系信息
+    ('8', 'WEBSITE', 'QQ联系方式', 'CONTACT_QQ', '', 'input', 'QQ联系方式', 8, NOW(), NOW()),
+    ('9', 'WEBSITE', '联系邮箱', 'CONTACT_EMAIL', 'contact@galaxy-cms.com', 'input', '网站联系邮箱', 9, NOW(), NOW()),
+    ('10', 'WEBSITE', '微信联系方式', 'CONTACT_WECHAT', '', 'input', '微信联系方式', 10, NOW(), NOW()),
+
+    -- 社交链接
+    ('11', 'WEBSITE', '社交媒体链接', 'SOCIAL_LINKS', '[{"image": "/static/images/github.png", "title": "GitHub", "url": "https://github.com/galaxy-cms"}]', 'json-editor', '社交媒体链接配置，JSON格式', 11, NOW(), NOW());
+
 
 
 -- 插入默认菜单数据

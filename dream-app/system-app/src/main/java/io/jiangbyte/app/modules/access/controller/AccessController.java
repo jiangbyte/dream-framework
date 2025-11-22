@@ -45,4 +45,11 @@ public class AccessController {
         return Result.success(accessService.doRegister(registerReq));
     }
 
+    @Operation(summary = "登出")
+    @PostMapping("/access/logout")
+    public Result<?> logout() {
+        accessService.doLogout();
+        return Result.success();
+    }
+
 }

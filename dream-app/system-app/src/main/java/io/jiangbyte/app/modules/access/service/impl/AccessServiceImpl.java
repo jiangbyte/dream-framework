@@ -85,6 +85,6 @@ public class AccessServiceImpl implements AccessService {
 
     @Override
     public void doLogout() {
-
+        StpUtil.logout();
     }
 }

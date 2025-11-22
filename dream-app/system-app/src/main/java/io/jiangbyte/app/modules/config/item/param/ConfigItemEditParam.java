@@ -1,10 +1,9 @@
 package io.jiangbyte.app.modules.config.item.param;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.jiangbyte.framework.pojo.BaseEntity;
+
 import java.io.Serializable;
-import java.time.LocalDateTime;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serial;
@@ -41,7 +40,7 @@ public class ConfigItemEditParam implements Serializable {
     private Date updatedAt;
 
     @Schema(description = "分组ID")
-    private String groupId;
+    private String groupCode;
 
     @Schema(description = "配置项名称")
     private String name;

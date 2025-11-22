@@ -1,25 +1,27 @@
 package io.jiangbyte.app.modules.config.item.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.jiangbyte.app.modules.config.group.entity.ConfigGroup;
+import io.jiangbyte.app.modules.config.group.mapper.ConfigGroupMapper;
 import io.jiangbyte.app.modules.config.item.entity.ConfigItem;
+import io.jiangbyte.app.modules.config.item.entity.WebsiteConfigInfo;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
 import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
 import io.jiangbyte.app.modules.config.item.mapper.ConfigItemMapper;
 import io.jiangbyte.app.modules.config.item.service.ConfigItemService;
 import io.jiangbyte.framework.utils.SortUtils;
-import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
 import io.jiangbyte.framework.result.ResultCode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigItem> implements ConfigItemService {
+    private final ConfigGroupMapper configGroupMapper;
 
     @Override
     public Page<ConfigItem> page(ConfigItemPageParam req) {
@@ -101,6 +104,83 @@ public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigI
             .lambda()
             .orderByDesc(ConfigItem::getId)
             .last("limit " + n));
+    }
+
+    @Override
+    public WebsiteConfigInfo websiteConfig() {
+        List<ConfigItem> configItems = this.list(new QueryWrapper<ConfigItem>()
+                .lambda()
+                .eq(ConfigItem::getGroupCode, "WEBSITE")
+        );
+
+        if (configItems == null || configItems.isEmpty()) {
+            return null;
+        }
+
+        // 创建配置信息对象
+        WebsiteConfigInfo configInfo = new WebsiteConfigInfo();
+
+        // 将配置项映射到对象属性
+        for (ConfigItem item : configItems) {
+            setConfigValue(configInfo, item.getCode(), item.getValue());
+        }
+
+        return configInfo;
+    }
+
+    /**
+     * 根据配置项代码设置对应的属性值
+     */
+    private void setConfigValue(WebsiteConfigInfo configInfo, String code, String value) {
+        if (value == null) return;
+
+        switch (code) {
+            // 网站信息
+            case "WEBSITE_NAME":
+                configInfo.setWebsiteName(value);
+                break;
+            case "WEBSITE_LOGO":
+                configInfo.setWebsiteLogo(value);
+                break;
+            case "WEBSITE_DESCRIPTION":
+                configInfo.setWebsiteDescription(value);
+                break;
+            case "WEBSITE_KEYWORDS":
+                configInfo.setWebsiteKeywords(value);
+                break;
+            case "WEBSITE_AUTHOR":
+                configInfo.setWebsiteAuthor(value);
+                break;
+            case "WEBSITE_COPYRIGHT":
+                configInfo.setWebsiteCopyright(value);
+                break;
+            case "WEBSITE_VERSION":
+                configInfo.setWebsiteVersion(value);
+                break;
+
+            // 联系信息
+            case "CONTACT_QQ":
+                configInfo.setContactQQ(value);
+                break;
+            case "CONTACT_EMAIL":
+                configInfo.setContactEmail(value);
+                break;
+            case "CONTACT_WECHAT":
+                configInfo.setContactWeChat(value);
+                break;
+
+            // 社交链接（JSON格式）
+            case "SOCIAL_LINKS":
+                if (StringUtils.isNotBlank(value)) {
+                    try {
+                        List<WebsiteConfigInfo.SocialLink> socialLinks = JSON.parseArray(value, WebsiteConfigInfo.SocialLink.class);
+                        configInfo.setSocialLinks(socialLinks);
+                    } catch (Exception e) {
+                        log.warn("解析社交链接JSON失败: {}", value, e);
+                    }
+                }
+                break;
+        }
     }
 
 }

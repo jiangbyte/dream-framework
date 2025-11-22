@@ -86,4 +86,10 @@ public class ConfigItemController {
         return Result.success(configItemService.topN(n));
     }
 
+
+    @Operation(summary = "获取网站配置")
+    @GetMapping("/config/item/website")
+    public Result<?> websiteConfig() {
+        return Result.success(configItemService.websiteConfig());
+    }
 }

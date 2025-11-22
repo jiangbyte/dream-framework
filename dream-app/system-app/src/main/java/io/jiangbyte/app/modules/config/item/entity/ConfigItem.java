@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.jiangbyte.framework.pojo.BaseEntity;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+
 import java.io.Serial;
-import java.util.Date;
+
 import io.jiangbyte.framework.enums.SortType;
 import io.jiangbyte.framework.utils.SortConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +35,7 @@ public class ConfigItem extends BaseEntity {
     private String id;
 
     @Schema(description = "分组ID")
-    private String groupId;
+    private String groupCode;
 
     @Schema(description = "配置项名称")
     private String name;
