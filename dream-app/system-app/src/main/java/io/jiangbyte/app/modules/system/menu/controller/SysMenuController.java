@@ -3,9 +3,8 @@ package io.jiangbyte.app.modules.system.menu.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import io.jiangbyte.framework.result.Result;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuPageParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuAddParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuEditParam;
+import io.jiangbyte.app.modules.system.menu.dto.SysMenuDto;
+import io.jiangbyte.app.modules.system.menu.dto.SysMenuPageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +23,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 菜单表 控制器
 */
 @Tag(name = "菜单表控制器")
@@ -39,14 +38,14 @@ public class SysMenuController {
     @Operation(summary = "获取菜单分页")
     @SaCheckPermission("/sys/menu/page")
     @GetMapping("/sys/menu/page")
-    public Result<?> page(@ParameterObject SysMenuPageParam req) {
+    public Result<?> page(@ParameterObject SysMenuPageQuery req) {
         return Result.success(sysMenuService.page(req));
     }
 
     @Operation(summary = "添加菜单")
     @SaCheckPermission("/sys/menu/add")
     @PostMapping("/sys/menu/add")
-    public Result<?> add(@RequestBody @Valid SysMenuAddParam req) {
+    public Result<?> add(@RequestBody @Valid SysMenuDto req) {
         sysMenuService.add(req);
         return Result.success();
     }
@@ -54,7 +53,7 @@ public class SysMenuController {
     @Operation(summary = "编辑菜单")
     @SaCheckPermission("/sys/menu/edit")
     @PostMapping("/sys/menu/edit")
-    public Result<?> edit(@RequestBody @Valid SysMenuEditParam req) {
+    public Result<?> edit(@RequestBody @Valid SysMenuDto req) {
         sysMenuService.edit(req);
         return Result.success();
     }

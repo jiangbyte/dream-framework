@@ -10,9 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.system.log.entity.SysLog;
-import io.jiangbyte.app.modules.system.log.param.SysLogAddParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogEditParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogPageParam;
+import io.jiangbyte.app.modules.system.log.dto.SysLogDto;
+import io.jiangbyte.app.modules.system.log.dto.SysLogPageQuery;
 import io.jiangbyte.app.modules.system.log.mapper.SysLogMapper;
 import io.jiangbyte.app.modules.system.log.service.SysLogService;
 import io.jiangbyte.framework.utils.SortUtils;
@@ -39,7 +38,7 @@ import java.util.*;
 public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> implements SysLogService {
 
     @Override
-    public Page<SysLog> page(SysLogPageParam req) {
+    public Page<SysLog> page(SysLogPageQuery req) {
         QueryWrapper<SysLog> queryWrapper = new QueryWrapper<SysLog>().checkSqlInjection();
         SortUtils.handleSort(SysLog.class, queryWrapper, req.getSortField(), req.getSortOrder());
         return this.page(BasePageRequest.Page(
@@ -50,14 +49,15 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(SysLogAddParam req) {
+    public void add(SysLogDto req) {
         SysLog bean = BeanUtil.toBean(req, SysLog.class);
+        bean.setId(null);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(SysLogEditParam req) {
+    public void edit(SysLogDto req) {
         if (!this.exists(new LambdaQueryWrapper<SysLog>().eq(SysLog::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

@@ -34,7 +34,7 @@ public class BaseEntity implements Serializable, TransPojo {
 
     private Date deletedAt;
 
-    private String deleteUser;
+    private String deletedBy;
 
     /**
      * 记录创建的时间戳
@@ -46,8 +46,8 @@ public class BaseEntity implements Serializable, TransPojo {
      * 创建者ID
      */
     @TableField(fill = FieldFill.INSERT)
-    @Trans(type = TransType.SIMPLE, targetClassName = "io.jiangbyte.app.modules.user.info.entity.UserInfo", fields = {"avatar", "nickname"}, refs = {"createUserAvatar", "createUserName"})
-    private String createUser;
+    @Trans(type = TransType.SIMPLE, targetClassName = "io.jiangbyte.app.modules.user.info.entity.UsersInfo", fields = {"avatar", "nickname"}, refs = {"createUserAvatar", "createUserName"})
+    private String createdBy;
 
     /**
      * 头像
@@ -59,7 +59,7 @@ public class BaseEntity implements Serializable, TransPojo {
      * 创建者名称
      */
     @TableField(exist = false)
-    private String createUserName;
+    private String createUserNickname;
 
     /**
      * 记录最后更新的时间戳
@@ -71,8 +71,8 @@ public class BaseEntity implements Serializable, TransPojo {
      * 记录最后更新的用户ID
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @Trans(type = TransType.SIMPLE, targetClassName = "io.jiangbyte.app.modules.user.info.entity.UserInfo", fields = {"avatar", "nickname"}, refs = {"updateUserAvatar", "updateUserName"})
-    private String updateUser;
+    @Trans(type = TransType.SIMPLE, targetClassName = "io.jiangbyte.app.modules.user.info.entity.UsersInfo", fields = {"avatar", "nickname"}, refs = {"updateUserAvatar", "updateUserName"})
+    private String updatedBy;
 
     /**
      * 头像
@@ -84,5 +84,5 @@ public class BaseEntity implements Serializable, TransPojo {
      * 更新者名称
      */
     @TableField(exist = false)
-    private String updateUserName;
+    private String updateUserNickname;
 }

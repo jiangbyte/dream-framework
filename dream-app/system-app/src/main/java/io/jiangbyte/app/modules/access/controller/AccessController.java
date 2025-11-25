@@ -1,10 +1,9 @@
 package io.jiangbyte.app.modules.access.controller;
 
-import io.jiangbyte.app.modules.access.param.*;
+import io.jiangbyte.app.modules.access.dto.*;
 import io.jiangbyte.app.modules.access.service.AccessService;
 import io.jiangbyte.framework.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

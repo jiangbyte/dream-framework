@@ -8,10 +8,10 @@ import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import io.jiangbyte.app.modules.access.param.*;
+import io.jiangbyte.app.modules.access.dto.*;
 import io.jiangbyte.app.modules.access.service.AccessService;
-import io.jiangbyte.app.modules.auth.account.entity.AuthAccount;
-import io.jiangbyte.app.modules.auth.account.mapper.AuthAccountMapper;
+import io.jiangbyte.app.modules.auths.account.entity.AuthsAccount;
+import io.jiangbyte.app.modules.auths.account.mapper.AuthsAccountMapper;
 import io.jiangbyte.framework.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,7 +33,7 @@ import java.util.Map;
 public class AccessServiceImpl implements AccessService {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final AuthAccountMapper authAccountMapper;
+    private final AuthsAccountMapper authsAccountMapper;
 
     @Override
     public CaptchaResp captcha() {
@@ -57,7 +57,7 @@ public class AccessServiceImpl implements AccessService {
     @Override
     public LoginResp doLogin(LoginReq loginReq) {
         // 数据库用户名是否存在
-        AuthAccount authAccount = authAccountMapper.selectOne(new LambdaQueryWrapper<AuthAccount>().eq(AuthAccount::getUsername, loginReq.getUsername()));
+        AuthsAccount authAccount = authsAccountMapper.selectOne(new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getUsername, loginReq.getUsername()));
         if (ObjectUtil.isEmpty(authAccount)) {
             throw new BusinessException("用户不存在");
         }
@@ -65,7 +65,7 @@ public class AccessServiceImpl implements AccessService {
         // 更新登录时间
         authAccount.setLastLoginTime(new Date());
 
-        authAccountMapper.updateById(authAccount);
+        authsAccountMapper.updateById(authAccount);
 
         SaLoginModel loginModel = new SaLoginModel();
         Map<String, Object> extraData = new HashMap<>();

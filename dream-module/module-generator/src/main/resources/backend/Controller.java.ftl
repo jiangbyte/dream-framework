@@ -2,9 +2,8 @@ package ${package.Controller};
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.jiangbyte.framework.result.Result;
-import ${package.PageParam}.${entity}PageParam;
-import ${package.AddParam}.${entity}AddParam;
-import ${package.EditParam}.${entity}EditParam;
+import ${package.Dto}.${entity}Dto;
+import ${package.PageQuery}.${entity}PageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,14 +41,14 @@ public class ${entity}Controller {
     @Operation(summary = "获取${table.comment?replace('表', '')}分页")
     @SaCheckPermission("/${table.name?replace('_', '/')}/page")
     @GetMapping("/${table.name?replace('_', '/')}/page")
-    public Result<?> page(@ParameterObject ${entity}PageParam req) {
+    public Result<?> page(@ParameterObject ${entity}PageQuery req) {
         return Result.success(${table.entityPath}Service.page(req));
     }
 
     @Operation(summary = "添加${table.comment?replace('表', '')}")
     @SaCheckPermission("/${table.name?replace('_', '/')}/add")
     @PostMapping("/${table.name?replace('_', '/')}/add")
-    public Result<?> add(@RequestBody @Valid ${entity}AddParam req) {
+    public Result<?> add(@RequestBody @Valid ${entity}Dto req) {
         ${table.entityPath}Service.add(req);
         return Result.success();
     }
@@ -57,7 +56,7 @@ public class ${entity}Controller {
     @Operation(summary = "编辑${table.comment?replace('表', '')}")
     @SaCheckPermission("/${table.name?replace('_', '/')}/edit")
     @PostMapping("/${table.name?replace('_', '/')}/edit")
-    public Result<?> edit(@RequestBody @Valid ${entity}EditParam req) {
+    public Result<?> edit(@RequestBody @Valid ${entity}Dto req) {
         ${table.entityPath}Service.edit(req);
         return Result.success();
     }

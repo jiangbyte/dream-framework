@@ -1,6 +1,6 @@
 package io.jiangbyte.app.modules.access.service;
 
-import io.jiangbyte.app.modules.access.param.*;
+import io.jiangbyte.app.modules.access.dto.*;
 
 /**
  * @author ZhangJiangHu

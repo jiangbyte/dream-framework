@@ -3,9 +3,8 @@ package ${package.Service};
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import ${package.Entity}.${entity};
-import ${package.AddParam}.${entity}AddParam;
-import ${package.EditParam}.${entity}EditParam;
-import ${package.PageParam}.${entity}PageParam;
+import ${package.Dto}.${entity}Dto;
+import ${package.PageQuery}.${entity}PageQuery;
 
 import java.util.List;
 
@@ -16,11 +15,11 @@ import java.util.List;
 * @description ${table.comment!} 服务类
 */
 public interface ${entity}Service extends ${superServiceClass}<${entity}> {
-    Page<${entity}> page(${entity}PageParam req);
+    Page<${entity}> page(${entity}PageQuery req);
 
-    void add(${entity}AddParam req);
+    void add(${entity}Dto req);
 
-    void edit(${entity}EditParam req);
+    void edit(${entity}Dto req);
 
     void delete(List<String> ids);
 

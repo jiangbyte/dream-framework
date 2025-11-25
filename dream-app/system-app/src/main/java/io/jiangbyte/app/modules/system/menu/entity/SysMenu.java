@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 菜单表
 */
 @EqualsAndHashCode(callSuper = true)
@@ -91,7 +91,7 @@ public class SysMenu extends BaseEntity {
     private String parameters;
 
     @Schema(description = "路由参数")
-    private Object extraParams;
+    private String extraParams;
 
     @Schema(description = "子级")
     @TableField(exist = false)

@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 系统活动日志记录表
 */
 @EqualsAndHashCode(callSuper = true)

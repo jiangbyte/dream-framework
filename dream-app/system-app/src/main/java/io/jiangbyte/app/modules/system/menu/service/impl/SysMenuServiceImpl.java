@@ -10,9 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.system.menu.entity.SysMenu;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuAddParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuEditParam;
-import io.jiangbyte.app.modules.system.menu.param.SysMenuPageParam;
+import io.jiangbyte.app.modules.system.menu.dto.SysMenuDto;
+import io.jiangbyte.app.modules.system.menu.dto.SysMenuPageQuery;
 import io.jiangbyte.app.modules.system.menu.mapper.SysMenuMapper;
 import io.jiangbyte.app.modules.system.menu.service.SysMenuService;
 import io.jiangbyte.framework.utils.SortUtils;
@@ -40,7 +39,7 @@ import java.util.*;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
     @Override
-    public Page<SysMenu> page(SysMenuPageParam req) {
+    public Page<SysMenu> page(SysMenuPageQuery req) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<SysMenu>().checkSqlInjection();
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(SysMenu::getName, req.getKeyword());
@@ -57,14 +56,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(SysMenuAddParam req) {
+    public void add(SysMenuDto req) {
         SysMenu bean = BeanUtil.toBean(req, SysMenu.class);
+        bean.setId(null);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(SysMenuEditParam req) {
+    public void edit(SysMenuDto req) {
         if (!this.exists(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

@@ -10,9 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jiangbyte.app.modules.config.group.entity.ConfigGroup;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupAddParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupEditParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupPageParam;
+import io.jiangbyte.app.modules.config.group.dto.ConfigGroupDto;
+import io.jiangbyte.app.modules.config.group.dto.ConfigGroupPageQuery;
 import io.jiangbyte.app.modules.config.group.mapper.ConfigGroupMapper;
 import io.jiangbyte.app.modules.config.group.service.ConfigGroupService;
 import io.jiangbyte.framework.utils.SortUtils;
@@ -39,7 +38,7 @@ import java.util.*;
 public class ConfigGroupServiceImpl extends ServiceImpl<ConfigGroupMapper, ConfigGroup> implements ConfigGroupService {
 
     @Override
-    public Page<ConfigGroup> page(ConfigGroupPageParam req) {
+    public Page<ConfigGroup> page(ConfigGroupPageQuery req) {
         QueryWrapper<ConfigGroup> queryWrapper = new QueryWrapper<ConfigGroup>().checkSqlInjection();
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(ConfigGroup::getName, req.getKeyword());
@@ -53,14 +52,15 @@ public class ConfigGroupServiceImpl extends ServiceImpl<ConfigGroupMapper, Confi
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(ConfigGroupAddParam req) {
+    public void add(ConfigGroupDto req) {
         ConfigGroup bean = BeanUtil.toBean(req, ConfigGroup.class);
+        bean.setId(null);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(ConfigGroupEditParam req) {
+    public void edit(ConfigGroupDto req) {
         if (!this.exists(new LambdaQueryWrapper<ConfigGroup>().eq(ConfigGroup::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

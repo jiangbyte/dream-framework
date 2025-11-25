@@ -10,9 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${package.Entity}.${entity};
-import ${package.AddParam}.${entity}AddParam;
-import ${package.EditParam}.${entity}EditParam;
-import ${package.PageParam}.${entity}PageParam;
+import ${package.Dto}.${entity}Dto;
+import ${package.PageQuery}.${entity}PageQuery;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${entity}Service;
 import io.jiangbyte.framework.utils.SortUtils;
@@ -39,7 +38,7 @@ import java.util.*;
 public class ${entity}ServiceImpl extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${entity}Service {
 
     @Override
-    public Page<${entity}> page(${entity}PageParam req) {
+    public Page<${entity}> page(${entity}PageQuery req) {
         QueryWrapper<${entity}> queryWrapper = new QueryWrapper<${entity}>().checkSqlInjection();
 <#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
@@ -63,14 +62,15 @@ public class ${entity}ServiceImpl extends ${superServiceImplClass}<${table.mappe
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(${entity}AddParam req) {
+    public void add(${entity}Dto req) {
         ${entity} bean = BeanUtil.toBean(req, ${entity}.class);
+        bean.setId(null);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(${entity}EditParam req) {
+    public void edit(${entity}Dto req) {
         if (!this.exists(new LambdaQueryWrapper<${entity}>().eq(${entity}::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }

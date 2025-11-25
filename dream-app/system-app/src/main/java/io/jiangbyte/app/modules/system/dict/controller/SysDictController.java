@@ -2,9 +2,8 @@ package io.jiangbyte.app.modules.system.dict.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.jiangbyte.framework.result.Result;
-import io.jiangbyte.app.modules.system.dict.param.SysDictPageParam;
-import io.jiangbyte.app.modules.system.dict.param.SysDictAddParam;
-import io.jiangbyte.app.modules.system.dict.param.SysDictEditParam;
+import io.jiangbyte.app.modules.system.dict.dto.SysDictDto;
+import io.jiangbyte.app.modules.system.dict.dto.SysDictPageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 /**
- * @author Charlie Zhang
- * @version v1.0
- * @date 2025-11-19
- * @description 系统字典表 控制器
- */
+* @author Charlie Zhang
+* @version v1.0
+* @date 2025-11-25
+* @description 系统字典表 控制器
+*/
 @Tag(name = "系统字典表控制器")
 @Slf4j
 @RequiredArgsConstructor
@@ -38,14 +37,14 @@ public class SysDictController {
     @Operation(summary = "获取系统字典分页")
     @SaCheckPermission("/sys/dict/page")
     @GetMapping("/sys/dict/page")
-    public Result<?> page(@ParameterObject SysDictPageParam req) {
+    public Result<?> page(@ParameterObject SysDictPageQuery req) {
         return Result.success(sysDictService.page(req));
     }
 
     @Operation(summary = "添加系统字典")
     @SaCheckPermission("/sys/dict/add")
     @PostMapping("/sys/dict/add")
-    public Result<?> add(@RequestBody @Valid SysDictAddParam req) {
+    public Result<?> add(@RequestBody @Valid SysDictDto req) {
         sysDictService.add(req);
         return Result.success();
     }
@@ -53,7 +52,7 @@ public class SysDictController {
     @Operation(summary = "编辑系统字典")
     @SaCheckPermission("/sys/dict/edit")
     @PostMapping("/sys/dict/edit")
-    public Result<?> edit(@RequestBody @Valid SysDictEditParam req) {
+    public Result<?> edit(@RequestBody @Valid SysDictDto req) {
         sysDictService.edit(req);
         return Result.success();
     }
@@ -114,5 +113,4 @@ public class SysDictController {
     ) {
         return Result.success(sysDictService.listTypeOptions(keyword));
     }
-
 }

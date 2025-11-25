@@ -57,7 +57,6 @@ public class Gen {
                             .entityBuilder()
 //                            .enableFileOverride() // 覆盖已生成文件
                             .superClass(BaseEntity.class) // 父类
-//                            .addSuperEntityColumns("update_user", "updated_at", "create_user", "created_at", "delete_user", "deleted_at", "is_deleted")
                             .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data")) // 开启 lombok
                             .naming(NamingStrategy.underline_to_camel) // 数据库表映射到实体的命名策略
                             .formatFileName("%s")
@@ -91,21 +90,15 @@ public class Gen {
                             List<CustomFile> build1 = List.of(
                                     /* ====================================================== 参数 ====================================================== */
                                     new CustomFile.Builder()
-                                            .fileName("AddParam.java") // 文件名称
-                                            .templatePath("/backend/AddParam.java.ftl") // 生成模板路径
-                                            .packageName("param")
+                                            .fileName("Dto.java") // 文件名称
+                                            .templatePath("/backend/Dto.java.ftl") // 生成模板路径
+                                            .packageName("dto")
                                             .enableFileOverride() // 覆盖已生成文件
                                             .build(),
                                     new CustomFile.Builder()
-                                            .fileName("EditParam.java") // 文件名称
-                                            .templatePath("/backend/EditParam.java.ftl") // 生成模板路径
-                                            .packageName("param")
-                                            .enableFileOverride() // 覆盖已生成文件
-                                            .build(),
-                                    new CustomFile.Builder()
-                                            .fileName("PageParam.java") // 文件名称
-                                            .templatePath("/backend/PageParam.java.ftl") // 生成模板路径
-                                            .packageName("param")
+                                            .fileName("PageQuery.java") // 文件名称
+                                            .templatePath("/backend/PageQuery.java.ftl") // 生成模板路径
+                                            .packageName("dto")
                                             .enableFileOverride() // 覆盖已生成文件
                                             .build(),
 

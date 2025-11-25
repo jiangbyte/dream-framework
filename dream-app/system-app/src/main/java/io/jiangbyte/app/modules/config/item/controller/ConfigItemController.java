@@ -2,9 +2,8 @@ package io.jiangbyte.app.modules.config.item.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.jiangbyte.framework.result.Result;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
+import io.jiangbyte.app.modules.config.item.dto.ConfigItemDto;
+import io.jiangbyte.app.modules.config.item.dto.ConfigItemPageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 系统配置表 控制器
 */
 @Tag(name = "系统配置表控制器")
@@ -38,14 +37,14 @@ public class ConfigItemController {
     @Operation(summary = "获取系统配置分页")
     @SaCheckPermission("/config/item/page")
     @GetMapping("/config/item/page")
-    public Result<?> page(@ParameterObject ConfigItemPageParam req) {
+    public Result<?> page(@ParameterObject ConfigItemPageQuery req) {
         return Result.success(configItemService.page(req));
     }
 
     @Operation(summary = "添加系统配置")
     @SaCheckPermission("/config/item/add")
     @PostMapping("/config/item/add")
-    public Result<?> add(@RequestBody @Valid ConfigItemAddParam req) {
+    public Result<?> add(@RequestBody @Valid ConfigItemDto req) {
         configItemService.add(req);
         return Result.success();
     }
@@ -53,7 +52,7 @@ public class ConfigItemController {
     @Operation(summary = "编辑系统配置")
     @SaCheckPermission("/config/item/edit")
     @PostMapping("/config/item/edit")
-    public Result<?> edit(@RequestBody @Valid ConfigItemEditParam req) {
+    public Result<?> edit(@RequestBody @Valid ConfigItemDto req) {
         configItemService.edit(req);
         return Result.success();
     }
@@ -86,10 +85,10 @@ public class ConfigItemController {
         return Result.success(configItemService.topN(n));
     }
 
-
     @Operation(summary = "获取网站配置")
     @GetMapping("/config/item/website")
     public Result<?> websiteConfig() {
         return Result.success(configItemService.websiteConfig());
     }
+
 }

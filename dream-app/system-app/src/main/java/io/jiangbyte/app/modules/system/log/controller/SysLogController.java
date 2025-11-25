@@ -2,9 +2,8 @@ package io.jiangbyte.app.modules.system.log.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.jiangbyte.framework.result.Result;
-import io.jiangbyte.app.modules.system.log.param.SysLogPageParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogAddParam;
-import io.jiangbyte.app.modules.system.log.param.SysLogEditParam;
+import io.jiangbyte.app.modules.system.log.dto.SysLogDto;
+import io.jiangbyte.app.modules.system.log.dto.SysLogPageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 系统活动日志记录表 控制器
 */
 @Tag(name = "系统活动日志记录表控制器")
@@ -38,14 +37,14 @@ public class SysLogController {
     @Operation(summary = "获取系统活动日志记录分页")
     @SaCheckPermission("/sys/log/page")
     @GetMapping("/sys/log/page")
-    public Result<?> page(@ParameterObject SysLogPageParam req) {
+    public Result<?> page(@ParameterObject SysLogPageQuery req) {
         return Result.success(sysLogService.page(req));
     }
 
     @Operation(summary = "添加系统活动日志记录")
     @SaCheckPermission("/sys/log/add")
     @PostMapping("/sys/log/add")
-    public Result<?> add(@RequestBody @Valid SysLogAddParam req) {
+    public Result<?> add(@RequestBody @Valid SysLogDto req) {
         sysLogService.add(req);
         return Result.success();
     }
@@ -53,7 +52,7 @@ public class SysLogController {
     @Operation(summary = "编辑系统活动日志记录")
     @SaCheckPermission("/sys/log/edit")
     @PostMapping("/sys/log/edit")
-    public Result<?> edit(@RequestBody @Valid SysLogEditParam req) {
+    public Result<?> edit(@RequestBody @Valid SysLogDto req) {
         sysLogService.edit(req);
         return Result.success();
     }

@@ -45,8 +45,8 @@ public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}><
     private static final long serialVersionUID = 1L;
 <#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
-    <#if !["isDeleted", "deletedAt", "deleteUser", "createdAt", "createUser", "updatedAt", "updateUser"]?seq_contains(field.propertyName)>
-    <#if field.keyFlag>
+    <#if !["isDeleted", "deletedAt", "deletedBy", "createdAt", "createdBy", "createdBy", "updatedAt", "updatedBy"]?seq_contains(field.propertyName)>
+        <#if field.keyFlag>
         <#assign keyPropertyName="${field.propertyName}"/>
     </#if>
 

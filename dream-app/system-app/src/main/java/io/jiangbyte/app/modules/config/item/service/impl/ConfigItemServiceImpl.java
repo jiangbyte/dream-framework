@@ -1,23 +1,23 @@
 package io.jiangbyte.app.modules.config.item.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.jiangbyte.app.modules.config.group.entity.ConfigGroup;
-import io.jiangbyte.app.modules.config.group.mapper.ConfigGroupMapper;
+import io.jiangbyte.app.modules.config.item.dto.WebsiteConfigInfo;
 import io.jiangbyte.app.modules.config.item.entity.ConfigItem;
-import io.jiangbyte.app.modules.config.item.entity.WebsiteConfigInfo;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemAddParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemEditParam;
-import io.jiangbyte.app.modules.config.item.param.ConfigItemPageParam;
+import io.jiangbyte.app.modules.config.item.dto.ConfigItemDto;
+import io.jiangbyte.app.modules.config.item.dto.ConfigItemPageQuery;
 import io.jiangbyte.app.modules.config.item.mapper.ConfigItemMapper;
 import io.jiangbyte.app.modules.config.item.service.ConfigItemService;
 import io.jiangbyte.framework.utils.SortUtils;
+import io.jiangbyte.framework.enums.ISortOrderEnum;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.pojo.BasePageRequest;
 import io.jiangbyte.framework.result.ResultCode;
@@ -39,10 +39,9 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigItem> implements ConfigItemService {
-    private final ConfigGroupMapper configGroupMapper;
 
     @Override
-    public Page<ConfigItem> page(ConfigItemPageParam req) {
+    public Page<ConfigItem> page(ConfigItemPageQuery req) {
         QueryWrapper<ConfigItem> queryWrapper = new QueryWrapper<ConfigItem>().checkSqlInjection();
         if (ObjectUtil.isNotEmpty(req.getKeyword())) {
             queryWrapper.lambda().like(ConfigItem::getName, req.getKeyword());
@@ -56,14 +55,15 @@ public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigI
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void add(ConfigItemAddParam req) {
+    public void add(ConfigItemDto req) {
         ConfigItem bean = BeanUtil.toBean(req, ConfigItem.class);
+        bean.setId(null);
         this.save(bean);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void edit(ConfigItemEditParam req) {
+    public void edit(ConfigItemDto req) {
         if (!this.exists(new LambdaQueryWrapper<ConfigItem>().eq(ConfigItem::getId, req.getId()))) {
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
@@ -182,5 +182,4 @@ public class ConfigItemServiceImpl extends ServiceImpl<ConfigItemMapper, ConfigI
                 break;
         }
     }
-
 }

@@ -2,9 +2,8 @@ package io.jiangbyte.app.modules.config.group.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.jiangbyte.framework.result.Result;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupPageParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupAddParam;
-import io.jiangbyte.app.modules.config.group.param.ConfigGroupEditParam;
+import io.jiangbyte.app.modules.config.group.dto.ConfigGroupDto;
+import io.jiangbyte.app.modules.config.group.dto.ConfigGroupPageQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
 * @author Charlie Zhang
 * @version v1.0
-* @date 2025-11-19
+* @date 2025-11-25
 * @description 配置分组表 控制器
 */
 @Tag(name = "配置分组表控制器")
@@ -38,14 +37,14 @@ public class ConfigGroupController {
     @Operation(summary = "获取配置分组分页")
     @SaCheckPermission("/config/group/page")
     @GetMapping("/config/group/page")
-    public Result<?> page(@ParameterObject ConfigGroupPageParam req) {
+    public Result<?> page(@ParameterObject ConfigGroupPageQuery req) {
         return Result.success(configGroupService.page(req));
     }
 
     @Operation(summary = "添加配置分组")
     @SaCheckPermission("/config/group/add")
     @PostMapping("/config/group/add")
-    public Result<?> add(@RequestBody @Valid ConfigGroupAddParam req) {
+    public Result<?> add(@RequestBody @Valid ConfigGroupDto req) {
         configGroupService.add(req);
         return Result.success();
     }
@@ -53,7 +52,7 @@ public class ConfigGroupController {
     @Operation(summary = "编辑配置分组")
     @SaCheckPermission("/config/group/edit")
     @PostMapping("/config/group/edit")
-    public Result<?> edit(@RequestBody @Valid ConfigGroupEditParam req) {
+    public Result<?> edit(@RequestBody @Valid ConfigGroupDto req) {
         configGroupService.edit(req);
         return Result.success();
     }
