@@ -1,3 +1,7 @@
+<div align="center">
+    <img src="./docs/logo2.png" width="150" height="150" />
+</div>
+
 # Dream Framework
 
 个人用初始脚手架，集成了常见开发组件与功能模块，适用于快速搭建 Java 后端应用，支持代码生成、权限管理、文件处理等基础功能。
