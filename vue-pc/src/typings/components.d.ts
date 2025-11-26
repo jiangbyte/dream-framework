@@ -13,7 +13,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BoolTag: typeof import('./../components/common/BoolTag.vue')['default']
-    copy: typeof import('./../compo../components/common/SortTag.vuet']
+    copy: typeof import('./../compo../components/common/SortTag.vuet')
     HelloWorld: typeof import('./../components/HelloWorld.vue')['default']
     IconParkOutlineMenuFoldOne: typeof import('~icons/icon-park-outline/menu-fold-one')['default']
     IconParkOutlineMenuUnfoldOne: typeof import('~icons/icon-park-outline/menu-unfold-one')['default']
@@ -112,7 +112,7 @@ declare module 'vue' {
 // For TSX support
 declare global {
   const BoolTag: typeof import('./../components/common/BoolTag.vue')['default']
-  const copy: typeof import('./../compo../components/common/SortTag.vuet']
+  const copy: typeof import('./../compo../components/common/SortTag.vuet')
   const HelloWorld: typeof import('./../components/HelloWorld.vue')['default']
   const IconParkOutlineMenuFoldOne: typeof import('~icons/icon-park-outline/menu-fold-one')['default']
   const IconParkOutlineMenuUnfoldOne: typeof import('~icons/icon-park-outline/menu-unfold-one')['default']
