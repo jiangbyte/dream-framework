@@ -6,3 +6,4 @@ io.jiangbyte.framework.email.MailPropertiesConfig
 io.jiangbyte.framework.email.SpringEmailServiceImpl
 io.jiangbyte.framework.utils.SortUtils
 io.jiangbyte.framework.utils.PasswordUtil
+io.jiangbyte.framework.utils.IpUtil

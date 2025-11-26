@@ -23,10 +23,11 @@ import io.jiangbyte.app.modules.users.profile.entity.UsersProfile;
 import io.jiangbyte.app.modules.users.profile.mapper.UsersProfileMapper;
 import io.jiangbyte.app.modules.users.stats.entity.UsersStats;
 import io.jiangbyte.app.modules.users.stats.mapper.UsersStatsMapper;
-import io.jiangbyte.app.utils.IpUtil;
+import io.jiangbyte.framework.utils.IpUtil;
 import io.jiangbyte.framework.email.EmailService;
 import io.jiangbyte.framework.exception.BusinessException;
 import io.jiangbyte.framework.utils.PasswordUtil;
+import io.jiangbyte.framework.utils.UserInputValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -105,6 +106,9 @@ public class AccessServiceImpl implements AccessService {
         // 校验验证码
         validateCaptcha(loginReq.getCaptchaId(), loginReq.getCaptchaCode());
 
+        // 校验用户名格式
+        UserInputValidator.validateUsername(loginReq.getUsername()).throwIfFailed();
+
         // 数据库用户名是否存在
         AuthsAccount authAccount = authsAccountMapper.selectOne(new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getUsername, loginReq.getUsername()));
         if (ObjectUtil.isEmpty(authAccount)) {
@@ -112,9 +116,12 @@ public class AccessServiceImpl implements AccessService {
         }
 
         // 密码解密与密码校验
-        if (!BCrypt.checkpw(passwordUtil.decrypt(loginReq.getPassword()), authAccount.getPassword())) {
+        String decrypt = passwordUtil.decrypt(loginReq.getPassword());
+        if (!BCrypt.checkpw(decrypt, authAccount.getPassword())) {
             throw new BusinessException("密码错误");
         }
+        // 校验密码格式
+        UserInputValidator.validatePassword(decrypt).throwIfFailed();
 
         // IP 记录
         String clientIp = IpUtil.getClientIp();
@@ -155,6 +162,12 @@ public class AccessServiceImpl implements AccessService {
     public RegisterResp doRegister(RegisterReq registerReq) {
         // 校验验证码
         validateCaptcha(registerReq.getCaptchaId(), registerReq.getCaptchaCode());
+        // 校验邮箱格式
+        UserInputValidator.validateEmail(registerReq.getEmail()).throwIfFailed();
+        // 校验昵称格式
+        UserInputValidator.validateNickname(registerReq.getNickname()).throwIfFailed();
+        // 校验用户名格式
+        UserInputValidator.validateUsername(registerReq.getUsername()).throwIfFailed();
 
         // 用户名
         if (authsAccountMapper.exists(new LambdaQueryWrapper<AuthsAccount>()
@@ -173,6 +186,8 @@ public class AccessServiceImpl implements AccessService {
         AuthsAccount authsAccount = new AuthsAccount();
         authsAccount.setUsername(registerReq.getUsername());
         String decrypt = passwordUtil.decrypt(registerReq.getPassword());
+        // 校验密码格式
+        UserInputValidator.validatePassword(decrypt).throwIfFailed();
         authsAccount.setPassword(BCrypt.hashpw(decrypt, BCrypt.gensalt()));
         authsAccount.setEmail(registerReq.getEmail());
         authsAccountMapper.insert(authsAccount);
@@ -276,8 +291,11 @@ public class AccessServiceImpl implements AccessService {
         validateCaptcha(confirmReq.getCaptchaId(), confirmReq.getCaptchaCode());
 
         String newPassword = passwordUtil.decrypt(confirmReq.getNewPassword());
+        // 校验密码格式
+        UserInputValidator.validatePassword(newPassword).throwIfFailed();
         String confirmPassword = passwordUtil.decrypt(confirmReq.getConfirmPassword());
-
+        // 校验密码格式
+        UserInputValidator.validatePassword(confirmPassword).throwIfFailed();
 
         // 校验新密码和确认密码是否一致
         if (!newPassword.equals(confirmPassword)) {
