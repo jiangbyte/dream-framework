@@ -31,25 +31,19 @@ dream-framework/
 │   ├── module-framework/   # 基础框架（工具类、缓存、通用配置等）
 │   └── module-generator/   # 代码生成器（基于MyBatis-Plus Generator）
 ├── dream-dependencies/     # 依赖管理（统一版本控制）
+├── vue-pc/                 # PC Web 端
+├── vue-admin/              # Admin 端
 └── script/                 # 数据库脚本（MySQL/PostgreSQL）
 ```
 
-### Web 端
-- Github：https://github.com/jiangbyte/dream-framework-pc
-- Gitee：https://gitee.com/jiangbyte/dream-framework-pc
-
-### 管理后台
-- Github：https://github.com/jiangbyte/dream-framework-admin
-- Gitee：https://gitee.com/jiangbyte/dream-framework-admin
-
 ### 其他版本后端
 #### Go 版本（暂停中）
-- Github：https://github.com/jiangbyte/galaxy
-- Gitee：https://gitee.com/jiangbyte/galaxy
+- Github：https://github.com/jiangbyte/dream-framework-go
+- Gitee：https://gitee.com/jiangbyte/dream-framework-go
 
 #### Python 版本（构建中）
-- Github：-
-- Gitee：-
+- Github：https://github.com/jiangbyte/dream_framework_python
+- Gitee：https://gitee.com/jiangbyte/dream_framework_python
 
 ## 功能特点
 
@@ -75,6 +69,14 @@ dream-framework/
 - 角色权限配置
 - 操作日志记录
 - 多环境配置支持（dev/prod）
+
+## 预览
+
+![](docs/1.jpg)
+
+![](docs/2.jpg)
+
+![](docs/3.jpg)
 
 ## 快速开始
 
