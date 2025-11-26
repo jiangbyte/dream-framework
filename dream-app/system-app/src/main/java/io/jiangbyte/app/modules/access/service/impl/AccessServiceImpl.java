@@ -9,6 +9,7 @@ import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.jiangbyte.app.modules.access.dto.*;
 import io.jiangbyte.app.modules.access.service.AccessService;
@@ -23,8 +24,11 @@ import io.jiangbyte.app.modules.users.profile.mapper.UsersProfileMapper;
 import io.jiangbyte.app.modules.users.stats.entity.UsersStats;
 import io.jiangbyte.app.modules.users.stats.mapper.UsersStatsMapper;
 import io.jiangbyte.app.utils.IpUtil;
+import io.jiangbyte.framework.email.EmailService;
 import io.jiangbyte.framework.exception.BusinessException;
+import io.jiangbyte.framework.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +44,7 @@ import java.util.Map;
  * @date 18/11/2025
  * @description TODO
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccessServiceImpl implements AccessService {
@@ -51,12 +56,12 @@ public class AccessServiceImpl implements AccessService {
     private final UsersProfileMapper usersProfileMapper;
     private final UsersStatsMapper usersStatsMapper;
 
+    private final EmailService emailService;
+    private final PasswordUtil passwordUtil;
+
     @Override
     public CaptchaResp captcha() {
         CaptchaResp captchaResult = new CaptchaResp();
-
-//        CircleCaptcha circleCaptcha = CaptchaUtil.createCircleCaptcha(100, 38, 4, 10);
-//        String imageBase64Data = circleCaptcha.getImageBase64Data();
 
         RandomGenerator randomGenerator = new RandomGenerator("0123456789", 4);
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(120, 40, 4, 5);
@@ -66,16 +71,49 @@ public class AccessServiceImpl implements AccessService {
         captchaResult.setCaptchaImg(imageBase64Data);
         String uuid = IdUtil.fastSimpleUUID();
         captchaResult.setCaptchaId(uuid);
+
+        // 存储验证码到Redis，5分钟有效期
         redisTemplate.opsForValue().set("captcha:" + uuid, lineCaptcha.getCode(), Duration.ofSeconds(5 * 60L));
         return captchaResult;
     }
 
+    /**
+     * 验证码校验方法
+     */
+    private void validateCaptcha(String captchaId, String captchaCode) {
+        if (StrUtil.isBlank(captchaId) || StrUtil.isBlank(captchaCode)) {
+            throw new BusinessException("验证码不能为空");
+        }
+
+        String redisKey = "captcha:" + captchaId;
+        String storedCaptcha = (String) redisTemplate.opsForValue().get(redisKey);
+
+        if (StrUtil.isBlank(storedCaptcha)) {
+            throw new BusinessException("验证码已过期，请刷新验证码");
+        }
+
+        if (!storedCaptcha.equalsIgnoreCase(captchaCode.trim())) {
+            throw new BusinessException("验证码错误");
+        }
+
+        // 验证成功后删除Redis中的验证码，防止重复使用
+        redisTemplate.delete(redisKey);
+    }
+
     @Override
     public LoginResp doLogin(LoginReq loginReq) {
+        // 校验验证码
+        validateCaptcha(loginReq.getCaptchaId(), loginReq.getCaptchaCode());
+
         // 数据库用户名是否存在
         AuthsAccount authAccount = authsAccountMapper.selectOne(new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getUsername, loginReq.getUsername()));
         if (ObjectUtil.isEmpty(authAccount)) {
             throw new BusinessException("用户不存在");
+        }
+
+        // 密码解密与密码校验
+        if (!BCrypt.checkpw(passwordUtil.decrypt(loginReq.getPassword()), authAccount.getPassword())) {
+            throw new BusinessException("密码错误");
         }
 
         // IP 记录
@@ -115,7 +153,9 @@ public class AccessServiceImpl implements AccessService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public RegisterResp doRegister(RegisterReq registerReq) {
-        // 唯一性校验
+        // 校验验证码
+        validateCaptcha(registerReq.getCaptchaId(), registerReq.getCaptchaCode());
+
         // 用户名
         if (authsAccountMapper.exists(new LambdaQueryWrapper<AuthsAccount>()
                 .eq(AuthsAccount::getUsername, registerReq.getUsername())
@@ -132,7 +172,8 @@ public class AccessServiceImpl implements AccessService {
         // 创建账户
         AuthsAccount authsAccount = new AuthsAccount();
         authsAccount.setUsername(registerReq.getUsername());
-        authsAccount.setPassword(BCrypt.hashpw(registerReq.getPassword(), BCrypt.gensalt()));
+        String decrypt = passwordUtil.decrypt(registerReq.getPassword());
+        authsAccount.setPassword(BCrypt.hashpw(decrypt, BCrypt.gensalt()));
         authsAccount.setEmail(registerReq.getEmail());
         authsAccountMapper.insert(authsAccount);
 
@@ -167,5 +208,110 @@ public class AccessServiceImpl implements AccessService {
     @Override
     public void doLogout() {
         StpUtil.logout();
+    }
+
+    @Override
+    public Boolean doResetPassword(ResetPasswordReq resetPasswordReq) {
+        // 校验验证码
+        validateCaptcha(resetPasswordReq.getCaptchaId(), resetPasswordReq.getCaptchaCode());
+
+        // 校验邮箱是否存在
+        AuthsAccount authAccount = authsAccountMapper.selectOne(
+                new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getEmail, resetPasswordReq.getEmail())
+        );
+
+        if (ObjectUtil.isEmpty(authAccount)) {
+            // 出于安全考虑，不提示邮箱不存在，直接返回成功
+            return true;
+        }
+
+        // 生成重置令牌
+        String resetToken = IdUtil.fastSimpleUUID();
+
+        // 将重置令牌存储到Redis，设置30分钟有效期
+        String redisKey = "password_reset_token:" + resetToken;
+        redisTemplate.opsForValue().set(
+                redisKey,
+                resetPasswordReq.getEmail(),
+                Duration.ofMinutes(30)
+        );
+
+        try {
+            // 发送密码重置邮件
+            emailService.sendPasswordResetEmail(resetPasswordReq.getEmail(), resetToken);
+
+            log.info("密码重置邮件发送成功 - 邮箱: {}", resetPasswordReq.getEmail());
+            return true;
+
+        } catch (Exception e) {
+            log.error("密码重置邮件发送失败 - 邮箱: {}, 错误: {}", resetPasswordReq.getEmail(), e.getMessage());
+            // 如果邮件发送失败，删除Redis中的令牌
+            redisTemplate.delete(redisKey);
+            throw new BusinessException("密码重置邮件发送失败，请稍后重试");
+        }
+    }
+
+    @Override
+    public Boolean validateResetPasswordToken(String token) {
+        if (StrUtil.isBlank(token)) {
+            return false;
+        }
+
+        // 从Redis中检查令牌是否存在且未过期
+        String redisKey = "password_reset_token:" + token;
+        String email = (String) redisTemplate.opsForValue().get(redisKey);
+
+        if (StrUtil.isBlank(email)) {
+            return false;
+        }
+
+        // 验证邮箱对应的用户是否存在
+        return authsAccountMapper.exists(
+                new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getEmail, email)
+        );
+    }
+
+    public Boolean confirmResetPassword(ResetPasswordConfirmReq confirmReq) {
+        // 校验验证码
+        validateCaptcha(confirmReq.getCaptchaId(), confirmReq.getCaptchaCode());
+
+        String newPassword = passwordUtil.decrypt(confirmReq.getNewPassword());
+        String confirmPassword = passwordUtil.decrypt(confirmReq.getConfirmPassword());
+
+
+        // 校验新密码和确认密码是否一致
+        if (!newPassword.equals(confirmPassword)) {
+            throw new BusinessException("新密码和确认密码不一致");
+        }
+
+        // 验证重置令牌
+        String redisKey = "password_reset_token:" + confirmReq.getToken();
+        String email = (String) redisTemplate.opsForValue().get(redisKey);
+
+        if (StrUtil.isBlank(email)) {
+            throw new BusinessException("重置令牌无效或已过期");
+        }
+
+        // 根据邮箱查找用户并更新密码
+        AuthsAccount authAccount = authsAccountMapper.selectOne(
+                new LambdaQueryWrapper<AuthsAccount>().eq(AuthsAccount::getEmail, email)
+        );
+
+        if (ObjectUtil.isEmpty(authAccount)) {
+            throw new BusinessException("用户账户不存在");
+        }
+
+        // 更新密码
+        authAccount.setPassword(BCrypt.hashpw(confirmPassword, BCrypt.gensalt()));
+        int updateCount = authsAccountMapper.updateById(authAccount);
+
+        if (updateCount > 0) {
+            // 密码更新成功后，删除Redis中的重置令牌
+            redisTemplate.delete(redisKey);
+            log.info("密码重置成功 - 用户ID: {}, 邮箱: {}", authAccount.getId(), email);
+            return true;
+        }
+
+        return false;
     }
 }

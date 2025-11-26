@@ -16,4 +16,12 @@ public interface AccessService {
     RegisterResp doRegister(RegisterReq registerReq);
 
     void doLogout();
+
+    // 密码相关
+
+    Boolean doResetPassword(ResetPasswordReq resetPasswordReq);
+
+    Boolean validateResetPasswordToken(String token);
+
+    Boolean confirmResetPassword(ResetPasswordConfirmReq confirmReq);
 }

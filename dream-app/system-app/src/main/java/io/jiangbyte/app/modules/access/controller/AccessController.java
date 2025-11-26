@@ -51,4 +51,22 @@ public class AccessController {
         return Result.success();
     }
 
+    @Operation(summary = "发起密码重置")
+    @PostMapping("/access/password/reset")
+    public Result<?> resetPassword(@RequestBody @Valid ResetPasswordReq resetPasswordReq) {
+        return Result.success(accessService.doResetPassword(resetPasswordReq));
+    }
+
+    @Operation(summary = "验证密码重置Token")
+    @GetMapping("/access/password/reset/token/validate")
+    public Result<?> validateResetPasswordToken(@RequestParam @Valid String token) {
+        return Result.success(accessService.validateResetPasswordToken(token));
+    }
+
+    @Operation(summary = "确认密码重置")
+    @PostMapping("/access/password/reset/confirm")
+    public Result<?> confirmResetPassword(@RequestBody @Valid ResetPasswordConfirmReq confirmReq) {
+        return Result.success(accessService.confirmResetPassword(confirmReq));
+    }
+
 }
