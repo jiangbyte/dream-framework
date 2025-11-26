@@ -257,7 +257,6 @@ public class AccessServiceImpl implements AccessService {
             // 发送密码重置邮件
             emailService.sendPasswordResetEmail(resetPasswordReq.getEmail(), resetToken);
 
-            log.info("密码重置邮件发送成功 - 邮箱: {}", resetPasswordReq.getEmail());
             return true;
 
         } catch (Exception e) {
@@ -330,7 +329,6 @@ public class AccessServiceImpl implements AccessService {
         if (updateCount > 0) {
             // 密码更新成功后，删除Redis中的重置令牌
             redisTemplate.delete(redisKey);
-            log.info("密码重置成功 - 用户ID: {}, 邮箱: {}", authAccount.getId(), email);
             return true;
         }
 

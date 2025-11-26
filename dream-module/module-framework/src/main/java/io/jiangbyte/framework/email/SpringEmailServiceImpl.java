@@ -35,8 +35,6 @@ public class SpringEmailServiceImpl implements EmailService {
                              .replace("{{Nickname}}", emailConfig.getNickname());
 
         sendEmail(to, subject, body);
-        
-        log.info("密码重置邮件发送成功: {}", to);
     }
 
     @Override
